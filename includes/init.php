@@ -113,13 +113,20 @@ if (!get_magic_quotes_gpc())
 
 /* 创建 ECSHOP 对象 */
 $ecs = new ECS($db_name, $prefix); // 实例化基础类
-define('DATA_DIR', $ecs->data_dir()); // 设置数据目录路径
-define('IMAGE_DIR', $ecs->image_dir()); // 设置图片目录路径
+define('DATA_DIR', $ecs->data_dir()); // 获取数据目录路径
+define('IMAGE_DIR', $ecs->image_dir()); // 获取图片目录路径
 
 
 /* 初始化数据库类 */
 require(ROOT_PATH . 'includes/cls_mysql.php');
 $db = new cls_mysql($db_host, $db_user, $db_pass, $db_name);
+
+
+$sql = 'SELECT `goods_name` FROM ' . $GLOBALS['ecs']->table('goods');
+p($db->getCol($sql));
+
+
+
 // 设置不允许缓存的表
 $db->set_disable_cache_tables(array($ecs->table('sessions'), $ecs->table('sessions_data'), $ecs->table('cart')));
 // 安全起见，删除数据库相关变量
@@ -131,7 +138,7 @@ $err = new ecs_error('message.dwt');
 /* 载入系统参数（商城配置信息） */
 $_CFG = load_config();
 
-/* 载入语言文件 */
+/* 载入前台语言文件 */
 require(ROOT_PATH . 'languages/' . $_CFG['lang'] . '/common.php');
 
 // 商店关闭设置

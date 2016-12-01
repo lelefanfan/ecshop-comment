@@ -15,29 +15,29 @@
 
 if (!defined('IN_ECS'))
 {
-    die('Hacking attempt');
+    die('Hacking attempt'); // 黑客攻击
 }
 
 class cls_mysql
 {
-    var $link_id    = NULL;
+    var $link_id    = NULL; // 资源句柄
 
-    var $settings   = array();
+    var $settings   = array(); // 存储数据库用户名、密码等参数
 
-    var $queryCount = 0;
-    var $queryTime  = '';
-    var $queryLog   = array();
+    var $queryCount = 0; // 执行sql的次数
+    var $queryTime  = ''; // 执行sql时间
+    var $queryLog   = array(); // 记录被执行的sql语句
 
     var $max_cache_time = 300; // 最大的缓存时间，以秒为单位
 
-    var $cache_data_dir = 'temp/query_caches/';
-    var $root_path      = '';
+    var $cache_data_dir = 'temp/query_caches/'; // 缓存目录
+    var $root_path      = ''; //应用根路径
 
-    var $error_message  = array();
-    var $platform       = '';
-    var $version        = '';
-    var $dbhash         = '';
-    var $starttime      = 0;
+    var $error_message  = array(); 
+    var $platform       = ''; // 服务器平台
+    var $version        = ''; // MySQL版本
+    var $dbhash         = ''; // 哈希值
+    var $starttime      = 0; // 开始时间
     var $timeline       = 0;
     var $timezone       = 0;
 
@@ -50,6 +50,17 @@ class cls_mysql
         $this->cls_mysql($dbhost, $dbuser, $dbpw, $dbname, $charset, $pconnect, $quiet);
     }
 
+    /**
+     * [cls_mysql MYSQL类构造函数]
+     * @param  string  $dbhost   [端口]
+     * @param  string  $dbuser   [用户名]
+     * @param  string  $dbpw     [密码]
+     * @param  string  $dbname   [数据库名称]
+     * @param  string  $charset  [编码]
+     * @param  integer $pconnect [数据库持久连接标示]
+     * @param  integer $quiet    [静默模式(是否显示错误信息)]
+     * @return boolean           [成功返回true，失败返回false]
+     */
     function cls_mysql($dbhost, $dbuser, $dbpw, $dbname = '', $charset = 'gbk', $pconnect = 0, $quiet = 0)
     {
         if (defined('EC_CHARSET'))
@@ -79,12 +90,25 @@ class cls_mysql
         }
     }
 
+    /**
+     * connect 连接数据库
+     * @param  string  $dbhost   数据库地址
+     * @param  string  $dbuser   用户名
+     * @param  string  $dbpw     密码
+     * @param  string  $dbname   数据库名称
+     * @param  string  $charset  编码
+     * @param  integer $pconnect 数据持久连接标识
+     * @param  integer $quiet    静默模式(是否显示错误信息)
+     * @return boolean           true连接成功,false连接失败
+     */
     function connect($dbhost, $dbuser, $dbpw, $dbname = '', $charset = 'utf8', $pconnect = 0, $quiet = 0)
     {
         if ($pconnect)
-        {
+        {   /* 持久连接 */
+
             if (!($this->link_id = @mysql_pconnect($dbhost, $dbuser, $dbpw)))
             {
+                // 非静默模式显示错误
                 if (!$quiet)
                 {
                     $this->ErrorMsg("Can't pConnect MySQL Server($dbhost)!");
@@ -94,7 +118,8 @@ class cls_mysql
             }
         }
         else
-        {
+        {   /* 普通连接 */
+
             if (PHP_VERSION >= '4.2')
             {
                 $this->link_id = @mysql_connect($dbhost, $dbuser, $dbpw, true);
@@ -102,11 +127,13 @@ class cls_mysql
             else
             {
                 $this->link_id = @mysql_connect($dbhost, $dbuser, $dbpw);
-
-                mt_srand((double)microtime() * 1000000); // 对 PHP 4.2 以下的版本进行随机数函数的初始化工作
+                // 对 PHP 4.2 以下的版本进行随机数函数的初始化工作
+                mt_srand((double)microtime() * 1000000); 
             }
+            // 连接不成功
             if (!$this->link_id)
             {
+                // 非静默模式显示错误
                 if (!$quiet)
                 {
                     $this->ErrorMsg("Can't Connect MySQL Server($dbhost)!");
@@ -115,8 +142,9 @@ class cls_mysql
                 return false;
             }
         }
-
+        // 数据库哈希值
         $this->dbhash  = md5($this->root_path . $dbhost . $dbuser . $dbpw . $dbname);
+        // 取得 MySQL 服务器信息 
         $this->version = mysql_get_server_info($this->link_id);
 
         /* 如果mysql 版本是 4.1+ 以上，需要对字符集进行初始化 */
@@ -131,15 +159,17 @@ class cls_mysql
                 mysql_query("SET sql_mode=''", $this->link_id);
             }
         }
-
+        // 缓存文件地址
         $sqlcache_config_file = $this->root_path . $this->cache_data_dir . 'sqlcache_config_file_' . $this->dbhash . '.php';
-
+        // 载入缓存文件
         @include($sqlcache_config_file);
-
+        // 当前时间
         $this->starttime = time();
 
+        // 缓存有效期检测，如果已经过期，执行if语句里的代码
         if ($this->max_cache_time && $this->starttime > $this->mysql_config_cache_file_time + $this->max_cache_time)
         {
+            /* 检测数据库所在服务器平台 */
             if ($dbhost != '.')
             {
                 $result = mysql_query("SHOW VARIABLES LIKE 'basedir'", $this->link_id);
@@ -182,12 +212,14 @@ class cls_mysql
                        '$this->timezone = ' . $this->timezone . ";\r\n" .
                        '$this->platform = ' . "'" . $this->platform . "';\r\n?" . '>';
 
+            // 写入缓存文件
             @file_put_contents($sqlcache_config_file, $content);
         }
 
         /* 选择数据库 */
         if ($dbname)
         {
+            // 选择数据库
             if (mysql_select_db($dbname, $this->link_id) === false )
             {
                 if (!$quiet)
@@ -208,11 +240,20 @@ class cls_mysql
         }
     }
 
+    /**
+     * select_database 选择数据库
+     * @param  string $dbname 选择数据库名称
+     * @return boolean        成功返回true，失败返回false
+     */
     function select_database($dbname)
     {
         return mysql_select_db($dbname, $this->link_id);
     }
 
+    /**
+     * set_mysql_charset 设置数据库编码
+     * @param string $charset 编码名称
+     */
     function set_mysql_charset($charset)
     {
         /* 如果mysql 版本是 4.1+ 以上，需要对字符集进行初始化 */
@@ -229,23 +270,37 @@ class cls_mysql
         }
     }
 
+    /**
+     * fetch_array 从结果集中取得一行作为关联数组，或数字数组，或二者兼有
+     * @param  resource $query       资源句柄
+     * @param  int $result_type      返回数组类型
+     * @return array                 返回一行数组，失败返回false
+     */
     function fetch_array($query, $result_type = MYSQL_ASSOC)
     {
         return mysql_fetch_array($query, $result_type);
     }
 
+    /**
+     * query 执行sql语句
+     * @param  string $sql  需要执行的sql语句
+     * @param  string $type 静默模式，如果值为'SILENT'表示连接失败不会报错
+     * @return resource     成功返回资源（SELECT，SHOW，DESCRIBE, EXPLAIN等 ）或TRUE（INSERT, UPDATE, DELETE, DROP等 ），失败返回false
+     */
     function query($sql, $type = '')
     {
+        // 连接数据库
         if ($this->link_id === NULL)
         {
             $this->connect($this->settings['dbhost'], $this->settings['dbuser'], $this->settings['dbpw'], $this->settings['dbname'], $this->settings['charset'], $this->settings['pconnect']);
             $this->settings = array();
         }
-
+        // 记录最近99条sql语句
         if ($this->queryCount++ <= 99)
         {
             $this->queryLog[] = $sql;
         }
+        // 设置当前sql执行时间
         if ($this->queryTime == '')
         {
             if (PHP_VERSION >= '5.0.0')
@@ -264,6 +319,7 @@ class cls_mysql
             mysql_ping($this->link_id);
         }
 
+        // 如果执行sql失败，并且不是静默模式，就会报错
         if (!($query = mysql_query($sql, $this->link_id)) && $type != 'SILENT')
         {
             $this->error_message[]['message'] = 'MySQL Query Error';
@@ -276,11 +332,14 @@ class cls_mysql
             return false;
         }
 
+        // 调试模式，记录日志
         if (defined('DEBUG_MODE') && (DEBUG_MODE & 8) == 8)
         {
+            // 日志文件路径
             $logfilename = $this->root_path . DATA_DIR . '/mysql_query_' . $this->dbhash . '_' . date('Y_m_d') . '.log';
             $str = $sql . "\n\n";
 
+            // 记录日志
             if (PHP_VERSION >= '5.0')
             {
                 file_put_contents($logfilename, $str, FILE_APPEND);
@@ -299,61 +358,116 @@ class cls_mysql
         return $query;
     }
 
+    /**
+     * affected_rows    取得前一次 MySQL 操作所影响的记录行数
+     * @return int      执行成功则返回受影响的行的数目，如果最近一次查询失败的话，函数返回 -1。 
+     */
     function affected_rows()
     {
         return mysql_affected_rows($this->link_id);
     }
 
+    /**
+     * error 获取上一个 MySQL 操作产生的文本错误信息
+     * @return string 成功返回错误信息，没有出错则返回 ''（空字符串）。
+     */
     function error()
     {
         return mysql_error($this->link_id);
     }
 
+    /**
+     * errno 获取上一个 MySQL 操作中的错误信息的数字编码 
+     * @return int 返回上一个 MySQL 函数的错误号码，如果没有出错则返回 0（零）。
+     */
     function errno()
     {
         return mysql_errno($this->link_id);
     }
 
+    /**
+     * result 取得结果数据
+     * @param  resource $query 资源句柄
+     * @param  int $row   取得行数
+     * @return array      成功以数组形式返回结果数据，失败返回false
+     */
     function result($query, $row)
     {
         return @mysql_result($query, $row);
     }
 
+    /**
+     * num_rows 取得结果集中行的数目 
+     * @param  resource $query 资源
+     * @return int        返回结果集中行的数目。此命令仅对 SELECT 语句有效。
+     */
     function num_rows($query)
     {
         return mysql_num_rows($query);
     }
 
+    /**
+     * num_fields 取得结果集中字段的数目
+     * @param  resource $query 资源
+     * @return int        返回结果集中字段的数目。
+     */
     function num_fields($query)
     {
         return mysql_num_fields($query);
     }
 
+    /**
+     * free_result 释放结果内存
+     * @param  resource $query 资源
+     * @return [type]        成功时返回 TRUE，或者在失败时返回 FALSE 。
+     */
     function free_result($query)
     {
         return mysql_free_result($query);
     }
 
+    /**
+     * insert_id 取得上一步 INSERT 操作产生的 ID
+     * @return int        成功返回id号，失败返回0。
+     */
     function insert_id()
     {
         return mysql_insert_id($this->link_id);
     }
 
+    /**
+     * fetchRow 从结果集中取得一行作为关联数组
+     * @param  resource $query 资源
+     * @return array        返回根据从结果集取得的行生成的关联数组；如果没有更多行则返回 FALSE 。
+     */
     function fetchRow($query)
     {
         return mysql_fetch_assoc($query);
     }
 
+    /**
+     * fetch_fields 从结果集中取得列信息并作为对象返回
+     * @param  resource $query 资源
+     * @return object        返回一个包含字段信息的对象
+     */
     function fetch_fields($query)
     {
         return mysql_fetch_field($query);
     }
 
+    /**
+     * version 获取MySQL版本信息
+     * @return string 返回版本信息
+     */
     function version()
     {
         return $this->version;
     }
 
+    /**
+     * ping 一个服务器连接，如果没有连接则重新连接 
+     * @return boolean 成功返回 TRUE，失败返回 FALSE。
+     */
     function ping()
     {
         if (PHP_VERSION >= '4.3')
@@ -366,6 +480,11 @@ class cls_mysql
         }
     }
 
+    /**
+     * escape_string 转义 SQL 语句中使用的字符串中的特殊字符，并考虑到连接的当前字符集 
+     * @param  string $unescaped_string 需要转义的字符
+     * @return string                   转义后的字符串
+     */
     static function escape_string($unescaped_string)
     {
         if (PHP_VERSION >= '4.3')
@@ -378,11 +497,20 @@ class cls_mysql
         }
     }
 
+    /**
+     * close 关闭 MySQL 连接 
+     * @return boolean 成功时返回 TRUE ， 或者在失败时返回 FALSE 。 
+     */
     function close()
     {
         return mysql_close($this->link_id);
     }
 
+    /**
+     * ErrorMsg 输出错误信息
+     * @param string $message 要输出的错误信息
+     * @param string $sql     该参数暂未启用
+     */
     function ErrorMsg($message = '', $sql = '')
     {
         if ($message)
@@ -400,7 +528,13 @@ class cls_mysql
         exit;
     }
 
-/* 仿真 Adodb 函数 */
+    /**
+     * selectLimit 为sql语句拼接 'LIMIT' 参数
+     * @param  string   $sql   sql语句
+     * @param  integer  $num   偏移数量
+     * @param  integer  $start 开始偏移量
+     * @return string         拼接 'LIMIT' 参数后的sql语句
+     */
     function selectLimit($sql, $num, $start = 0)
     {
         if ($start == 0)
@@ -415,6 +549,12 @@ class cls_mysql
         return $this->query($sql);
     }
 
+    /**
+     * getOne  从结果集中取得一行作为枚举数组 
+     * @param  string  $sql     sql语句
+     * @param  boolean $limited 如果为true，表示只查询一条数据。
+     * @return array           返回一条数据
+     */
     function getOne($sql, $limited = false)
     {
         if ($limited == true)
@@ -442,17 +582,27 @@ class cls_mysql
         }
     }
 
+    /**
+     * getOneCached 返回带缓存的一条数据库数据
+     * @param  string $sql    sql语句
+     * @param  string $cached 缓存类型,FILEFIRST,MYSQLFIRST
+     * @return array         查询到的数据(array,int键值)
+     */
     function getOneCached($sql, $cached = 'FILEFIRST')
     {
+        // 为sql语句拼接 'LIMIT 1'
         $sql = trim($sql . ' LIMIT 1');
 
         $cachefirst = ($cached == 'FILEFIRST' || ($cached == 'MYSQLFIRST' && $this->platform != 'WINDOWS')) && $this->max_cache_time;
+
+
         if (!$cachefirst)
-        {
+        {   //不缓存，直接返回
             return $this->getOne($sql, true);
         }
         else
         {
+            //带缓存执行sql
             $result = $this->getSqlCacheData($sql, $cached);
             if (empty($result['storecache']) == true)
             {
@@ -470,6 +620,11 @@ class cls_mysql
         return $arr;
     }
 
+    /**
+     * getAll 执行sql语句，并返回全部结果集
+     * @param  string $sql sql语句
+     * @return array      结果集
+     */
     function getAll($sql)
     {
         $res = $this->query($sql);
@@ -515,6 +670,12 @@ class cls_mysql
         return $arr;
     }
 
+    /**
+     * getRow 从结果集中取得一行作为关联数组 
+     * @param  string  $sql     sql语句
+     * @param  boolean $limited 如果为true，表示只查询一条数据。
+     * @return array           一条结果集
+     */
     function getRow($sql, $limited = false)
     {
         if ($limited == true)
@@ -561,6 +722,11 @@ class cls_mysql
         return $arr;
     }
 
+    /**
+     * getCol 获取结果集的第一个字段值
+     * @param  string $sql sql语句
+     * @return array      返回一个字段值
+     */
     function getCol($sql)
     {
         $res = $this->query($sql);
@@ -775,6 +941,12 @@ class cls_mysql
         return $this->max_cache_time;
     }
 
+    /**
+     * getSqlCacheData 获取数据缓存
+     * @param  string $sql    sql语句
+     * @param  string $cached 缓存类型(FILEFIRST,MYSQLFIRST)
+     * @return array         结果数组$result[filename]缓存文件地址,$result[storecache]是否缓存，$result[data]缓存内容
+     */
     function getSqlCacheData($sql, $cached = '')
     {
         $sql = trim($sql);

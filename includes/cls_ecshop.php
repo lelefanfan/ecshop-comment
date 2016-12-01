@@ -15,12 +15,12 @@
 
 if (!defined('IN_ECS'))
 {
-    die('Hacking attempt');
+    die('Hacking attempt'); // 黑客攻击
 }
 
-define('APPNAME', 'ECSHOP');
-define('VERSION', 'v3.0.0');
-define('RELEASE', '20160518');
+define('APPNAME', 'ECSHOP'); // 应用名称
+define('VERSION', 'v3.0.0'); // EC版本
+define('RELEASE', '20160518'); // 最后更新日期
 
 class ECS
 {

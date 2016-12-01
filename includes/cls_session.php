@@ -20,22 +20,25 @@ if (!defined('IN_ECS'))
 
 class cls_session
 {
-    var $db             = NULL;
-    var $session_table  = '';
+    var $db             = NULL; // 数据库句柄
+    var $session_table  = ''; // SESSION存储表名
 
     var $max_life_time  = 1800; // SESSION 过期时间
 
-    var $session_name   = '';
-    var $session_id     = '';
+    var $session_name   = ''; // 会话名
+    var $session_id     = ''; // 会话ID
 
-    var $session_expiry = '';
-    var $session_md5    = '';
+    var $session_expiry = ''; // SESSION 有效期
+    var $session_md5    = ''; // 加密
 
-    var $session_cookie_path   = '/';
-    var $session_cookie_domain = '';
-    var $session_cookie_secure = false;
+    // 下面的三个参数都为setcookie中的参数
+    var $session_cookie_path   = '/'; // COOKIE 服务器路径
+    var $session_cookie_domain = ''; // COOKIE 域名
+    var $session_cookie_secure = false; // 规定是否通过安全的 HTTPS 连接来传输 cookie。
 
+    // 客户端真实IP
     var $_ip   = '';
+    // 当前时间
     var $_time = 0;
 
     function __construct(&$db, $session_table, $session_data_table, $session_name = 'ECS_ID', $session_id = '')
@@ -45,8 +48,10 @@ class cls_session
 
     function cls_session(&$db, $session_table, $session_data_table, $session_name = 'ECS_ID', $session_id = '')
     {
+        // 初始化一个全局SESSION变量
         $GLOBALS['_SESSION'] = array();
 
+        // 初始化 setcookie() 三个参数
         if (!empty($GLOBALS['cookie_path']))
         {
             $this->session_cookie_path = $GLOBALS['cookie_path'];
@@ -75,13 +80,15 @@ class cls_session
         }
 
         $this->session_name       = $session_name;
-        $this->session_table      = $session_table;
-        $this->session_data_table = $session_data_table;
+        $this->session_table      = $session_table; // SESSION 表
+        $this->session_data_table = $session_data_table; // SESSION 数据库表
 
+        // 数据库句柄
         $this->db  = $db;
         // 用户真实id
         $this->_ip = real_ip();
 
+        // 检测COOKIE中是否存在SESSION的ID
         if ($session_id == '' && !empty($_COOKIE[$this->session_name]))
         {
             $this->session_id = $_COOKIE[$this->session_name];
@@ -91,9 +98,12 @@ class cls_session
             $this->session_id = $session_id;
         }
 
+        // 检测COOKIE中存在SESSION的ID合法性 
         if ($this->session_id)
         {
+            // 截取COOKIE中SESSION的ID前32位
             $tmp_session_id = substr($this->session_id, 0, 32);
+
             if ($this->gen_session_key($tmp_session_id) == substr($this->session_id, 32))
             {
                 $this->session_id = $tmp_session_id;
@@ -104,6 +114,7 @@ class cls_session
             }
         }
 
+        // 获取当前时间
         $this->_time = time();
 
         if ($this->session_id)
@@ -120,6 +131,10 @@ class cls_session
         register_shutdown_function(array(&$this, 'close_session'));
     }
 
+    /**
+     * [gen_session_id 生成一个唯一的session_id并插入数据库]
+     * @return [type] [description]
+     */
     function gen_session_id()
     {
         $this->session_id = md5(uniqid(mt_rand(), true));
@@ -127,6 +142,11 @@ class cls_session
         return $this->insert_session();
     }
 
+    /**
+     * [gen_session_key 获取 SESSION KEY]
+     * @param  [string] $session_id [SESSION ID]
+     * @return [type]             [description]
+     */
     function gen_session_key($session_id)
     {
         static $ip = '';
@@ -139,43 +159,59 @@ class cls_session
         return sprintf('%08x', crc32(ROOT_PATH . $ip . $session_id));
     }
 
+    /**
+     * insert_session 将 SESSION ID 插入数据库
+     * @return boolean 成功返回true，失败返回false
+     */
     function insert_session()
     {
         return $this->db->query('INSERT INTO ' . $this->session_table . " (sesskey, expiry, ip, data) VALUES ('" . $this->session_id . "', '". $this->_time ."', '". $this->_ip ."', 'a:0:{}')");
     }
 
+    /**
+     * load_session 加载session
+     * @return [type] [description]
+     */
     function load_session()
     {
+        // 根据session的id从 ecs_sessions 表获取当前session数据
         $session = $this->db->getRow('SELECT userid, adminid, user_name, user_rank, discount, email, data, expiry FROM ' . $this->session_table . " WHERE sesskey = '" . $this->session_id . "'");
+
         if (empty($session))
         {
+            // 初始化session信息
             $this->insert_session();
-
             $this->session_expiry = 0;
             $this->session_md5    = '40cd750bba9870f18aada2478b24840a';
             $GLOBALS['_SESSION']  = array();
         }
         else
         {
+            // 存在数据并且在有效期范围
             if (!empty($session['data']) && $this->_time - $session['expiry'] <= $this->max_life_time)
             {
+                // 重新设置有效期
                 $this->session_expiry = $session['expiry'];
+                // 将session内容md5加密
                 $this->session_md5    = md5($session['data']);
-                $GLOBALS['_SESSION']  = unserialize($session['data']);
-                $GLOBALS['_SESSION']['user_id'] = $session['userid'];
-                $GLOBALS['_SESSION']['admin_id'] = $session['adminid'];
-                $GLOBALS['_SESSION']['user_name'] = $session['user_name'];
-                $GLOBALS['_SESSION']['user_rank'] = $session['user_rank'];
-                $GLOBALS['_SESSION']['discount'] = $session['discount'];
-                $GLOBALS['_SESSION']['email'] = $session['email'];
+                // 将session内容保存到全局变量 '_SESSION' 中
+                $GLOBALS['_SESSION']  = unserialize($session['data']); // session内容
+                $GLOBALS['_SESSION']['user_id'] = $session['userid']; // userid
+                $GLOBALS['_SESSION']['admin_id'] = $session['adminid']; // adminid
+                $GLOBALS['_SESSION']['user_name'] = $session['user_name']; // user_name
+                $GLOBALS['_SESSION']['user_rank'] = $session['user_rank']; // user_rank
+                $GLOBALS['_SESSION']['discount'] = $session['discount']; // discount
+                $GLOBALS['_SESSION']['email'] = $session['email']; // 邮箱
             }
             else
             {
+                // 根据session的id获取sessions_data表信息
                 $session_data = $this->db->getRow('SELECT data, expiry FROM ' . $this->session_data_table . " WHERE sesskey = '" . $this->session_id . "'");
                 if (!empty($session_data['data']) && $this->_time - $session_data['expiry'] <= $this->max_life_time)
                 {
                     $this->session_expiry = $session_data['expiry'];
                     $this->session_md5    = md5($session_data['data']);
+                    // 将session内容保存到全局变量 '_SESSION' 中
                     $GLOBALS['_SESSION']  = unserialize($session_data['data']);
                     $GLOBALS['_SESSION']['user_id'] = $session['userid'];
                     $GLOBALS['_SESSION']['admin_id'] = $session['adminid'];
@@ -186,6 +222,7 @@ class cls_session
                 }
                 else
                 {
+                    // 清空session信息
                     $this->session_expiry = 0;
                     $this->session_md5    = '40cd750bba9870f18aada2478b24840a';
                     $GLOBALS['_SESSION']  = array();
@@ -247,6 +284,11 @@ class cls_session
         return true;
     }
 
+    /**
+     * delete_spec_admin_session 根据管理员id删除session
+     * @param  string $adminid 管理员id
+     * @return boolean         成功返回true，失败返回false
+     */
     function delete_spec_admin_session($adminid)
     {
         if (!empty($GLOBALS['_SESSION']['admin_id']) && $adminid)
@@ -259,6 +301,10 @@ class cls_session
         }
     }
 
+    /**
+     * destroy_session 销毁session
+     * @return boolean         成功返回true，失败返回false
+     */
     function destroy_session()
     {
         $GLOBALS['_SESSION'] = array();
@@ -277,11 +323,19 @@ class cls_session
         return $this->db->query('DELETE FROM ' . $this->session_table . " WHERE sesskey = '" . $this->session_id . "' LIMIT 1");
     }
 
+    /**
+     * get_session_id 获取session的id
+     * @return int 返回session的id
+     */
     function get_session_id()
     {
         return $this->session_id;
     }
 
+    /**
+     * get_users_count 获取session的条数
+     * @return int session条数
+     */
     function get_users_count()
     {
         return $this->db->getOne('SELECT count(*) FROM ' . $this->session_table);
