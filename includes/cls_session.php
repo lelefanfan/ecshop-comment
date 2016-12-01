@@ -170,7 +170,6 @@ class cls_session
 
     /**
      * load_session 加载session
-     * @return [type] [description]
      */
     function load_session()
     {
@@ -231,6 +230,10 @@ class cls_session
         }
     }
 
+    /**
+     * update_session 更新session
+     * @return [type] [description]
+     */
     function update_session()
     {
         $adminid = !empty($GLOBALS['_SESSION']['admin_id']) ? intval($GLOBALS['_SESSION']['admin_id']) : 0;
