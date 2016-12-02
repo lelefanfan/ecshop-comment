@@ -772,14 +772,25 @@ class cls_mysql
         return $arr;
     }
 
+    /**
+     * autoExecute 自动执行INSERT或UPDATE
+     * @param  string $table        需要操作的表名
+     * @param  array $field_values  需要插入或更新的数据
+     * @param  string $mode         执行的动作，包括'INSERT、UPDATE'
+     * @param  string $where        执行'UPDATE'的条件
+     * @param  string $querymode    静默模式，如果值为 'SILENT',表示为静默模式，执行错误不会报错
+     * @return boolean              成功返回true，失败返回false
+     */
     function autoExecute($table, $field_values, $mode = 'INSERT', $where = '', $querymode = '')
     {
+        // 获取 $table 表的字段名称
         $field_names = $this->getCol('DESC ' . $table);
 
         $sql = '';
-        if ($mode == 'INSERT')
+        if ($mode == 'INSERT') // 如果是插入数据
         {
             $fields = $values = array();
+            // 循环 $table 所有字段，为插入语句 字段 和 值赋值  'INSERT INTO 表名 (字段) VALUES (值)'
             foreach ($field_names AS $value)
             {
                 if (array_key_exists($value, $field_values) == true)
@@ -821,21 +832,32 @@ class cls_mysql
         }
     }
 
+    /**
+     * autoReplace 自动添加更新数据（插入数据时会进行检测，如果存在主键，插入并更新，如果不存在，直接插入）
+     * @param  string $table         需要操作的表名
+     * @param  array  $field_values  字段数据
+     * @param  array  $update_values 更新字段数据
+     * @param  string $where         条件，如果mysql版本高于4.1，此参数无用
+     * @param  string $querymode     静默模式
+     * @return boolean               成功返回true，失败返回false
+     */
     function autoReplace($table, $field_values, $update_values, $where = '', $querymode = '')
     {
+        // 获取 $table 表字段信息
         $field_descs = $this->getAll('DESC ' . $table);
 
         $primary_keys = array();
         foreach ($field_descs AS $value)
         {
-            $field_names[] = $value['Field'];
+            $field_names[] = $value['Field']; // 获取 $table 表字段名称
             if ($value['Key'] == 'PRI')
             {
-                $primary_keys[] = $value['Field'];
+                $primary_keys[] = $value['Field']; //获取主键字段
             }
         }
 
         $fields = $values = array();
+        // 循环 $table 表所有字段，分别设置字段和值
         foreach ($field_names AS $value)
         {
             if (array_key_exists($value, $field_values) == true)
@@ -848,9 +870,10 @@ class cls_mysql
         $sets = array();
         foreach ($update_values AS $key => $value)
         {
+            // 如果更新字段，存在与值字段
             if (array_key_exists($key, $field_values) == true)
             {
-                if (is_int($value) || is_float($value))
+                if (is_int($value) || is_float($value)) // 如果是数值型
                 {
                     $sets[] = $key . ' = ' . $key . ' + ' . $value;
                 }
@@ -862,17 +885,19 @@ class cls_mysql
         }
 
         $sql = '';
-        if (empty($primary_keys))
+        if (empty($primary_keys)) // 如果不存在主键，直接插入
         {
+            // 如果 $fields 有值
             if (!empty($fields))
             {
                 $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
             }
         }
-        else
+        else //如果存在主键，插入并更新
         {
             if ($this->version() >= '4.1')
             {
+                // 如果 $fields 有值
                 if (!empty($fields))
                 {
                     $sql = 'INSERT INTO ' . $table . ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';
