@@ -51,7 +51,9 @@ class cls_mysql
     }
 
     /**
-     * [cls_mysql MYSQL类构造函数]
+     * 类构造函数
+     *
+     * @access public
      * @param  string  $dbhost   [端口]
      * @param  string  $dbuser   [用户名]
      * @param  string  $dbpw     [密码]

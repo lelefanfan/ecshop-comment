@@ -23,7 +23,7 @@ class cls_session
     var $db             = NULL; // 数据库句柄
     var $session_table  = ''; // SESSION存储表名
 
-    var $max_life_time  = 1800; // SESSION 过期时间
+    var $max_life_time  = 1800; // SESSION最大生命周期（单位为秒）
 
     var $session_name   = ''; // 会话名
     var $session_id     = ''; // 会话ID
@@ -119,12 +119,12 @@ class cls_session
 
         if ($this->session_id)
         {
-            $this->load_session();
+            $this->load_session(); // 加载session
         }
-        else
+        else // 不存在session id
         {
-            $this->gen_session_id();
-
+            $this->gen_session_id(); // 生成session id，并初始化。
+            // 生成session的cookie
             setcookie($this->session_name, $this->session_id . $this->gen_session_key($this->session_id), 0, $this->session_cookie_path, $this->session_cookie_domain, $this->session_cookie_secure);
         }
 
@@ -132,8 +132,8 @@ class cls_session
     }
 
     /**
-     * [gen_session_id 生成一个唯一的session_id并插入数据库]
-     * @return [type] [description]
+     * gen_session_id 生成一个唯一的session_id并插入数据库
+     * @return string   返回32位session id
      */
     function gen_session_id()
     {
@@ -143,9 +143,9 @@ class cls_session
     }
 
     /**
-     * [gen_session_key 获取 SESSION KEY]
-     * @param  [string] $session_id [SESSION ID]
-     * @return [type]             [description]
+     * gen_session_key 获取 SESSION KEY，根据 $session_id等 加密的key
+     * @param  [string] $session_id  SESSION ID
+     * @return string             session key
      */
     function gen_session_key($session_id)
     {
@@ -160,7 +160,7 @@ class cls_session
     }
 
     /**
-     * insert_session 将 SESSION ID 插入数据库
+     * insert_session 初始化session，将 SESSION ID 插入数据库
      * @return boolean 成功返回true，失败返回false
      */
     function insert_session()
@@ -169,7 +169,7 @@ class cls_session
     }
 
     /**
-     * load_session 加载session
+     * load_session 加载session到$GLOBALS['_SESSION']全局变量中
      */
     function load_session()
     {
@@ -186,12 +186,12 @@ class cls_session
         }
         else
         {
-            // 存在数据并且在有效期范围
+            // 存在数据并且在有效期范围，'expiry'字段表示session创建时间
             if (!empty($session['data']) && $this->_time - $session['expiry'] <= $this->max_life_time)
             {
                 // 重新设置有效期
                 $this->session_expiry = $session['expiry'];
-                // 将session内容md5加密
+                // session md5
                 $this->session_md5    = md5($session['data']);
                 // 将session内容保存到全局变量 '_SESSION' 中
                 $GLOBALS['_SESSION']  = unserialize($session['data']); // session内容
@@ -269,16 +269,21 @@ class cls_session
         return $this->db->query('UPDATE ' . $this->session_table . " SET expiry = '" . $this->_time . "', ip = '" . $this->_ip . "', userid = '" . $userid . "', adminid = '" . $adminid . "', user_name='" . $user_name . "', user_rank='" . $user_rank . "', discount='" . $discount . "', email='" . $email . "', data = '$data' WHERE sesskey = '" . $this->session_id . "' LIMIT 1");
     }
 
+    /**
+     * close_session 删除session
+     * @return boolean 成功返回true，失败返回false
+     */
     function close_session()
     {
         $this->update_session();
 
-        /* 随机对 sessions_data 的库进行删除操作 */
+        /* 随机对 sessions_data 的库进行删除操作，但是只删除过期的session */
         if (mt_rand(0, 2) == 2)
         {
             $this->db->query('DELETE FROM ' . $this->session_data_table . ' WHERE expiry < ' . ($this->_time - $this->max_life_time));
         }
 
+        /* 随机对 sessionss 的库进行删除操作，但是只删除过期的session */
         if ((time() % 2) == 0)
         {
             return $this->db->query('DELETE FROM ' . $this->session_table . ' WHERE expiry < ' . ($this->_time - $this->max_life_time));

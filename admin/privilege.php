@@ -169,6 +169,9 @@ elseif ($_REQUEST['act'] == 'signin')
 
     $sql="SELECT `ec_salt` FROM ". $ecs->table('admin_user') ."WHERE user_name = '" . $_POST['username']."'";
     $ec_salt =$db->getOne($sql);
+
+    // echo md5(md5('shaolin123').$ec_salt);die;
+
     if(!empty($ec_salt))
     {
          /* 检查密码是否正确 */
@@ -183,6 +186,7 @@ elseif ($_REQUEST['act'] == 'signin')
             " FROM " . $ecs->table('admin_user') .
             " WHERE user_name = '" . $_POST['username']. "' AND password = '" . md5($_POST['password']) . "'";
     }
+    
     $row = $db->getRow($sql);
 
     if ($row)

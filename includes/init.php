@@ -122,11 +122,6 @@ require(ROOT_PATH . 'includes/cls_mysql.php');
 $db = new cls_mysql($db_host, $db_user, $db_pass, $db_name);
 
 
-$sql = 'SELECT `goods_name` FROM ' . $GLOBALS['ecs']->table('goods');
-p($db->getCol($sql));
-
-
-
 // 设置不允许缓存的表
 $db->set_disable_cache_tables(array($ecs->table('sessions'), $ecs->table('sessions_data'), $ecs->table('cart')));
 // 安全起见，删除数据库相关变量
@@ -228,13 +223,16 @@ if (!defined('INIT_NO_SMARTY'))
 // 会员相关设置
 if (!defined('INIT_NO_USERS'))
 {
-    /* 会员信息 */
+    // 会员信息，返回会员数据处理类
     $user = init_users();
 
+    // 如果不存在 user_id
     if (!isset($_SESSION['user_id']))
     {
-        /* 获取投放站点的名称 */
+        // 获取投放站点的名称
         $site_name = isset($_GET['from'])   ? htmlspecialchars($_GET['from']) : addslashes($_LANG['self_site']);
+
+        // 获取广告id
         $from_ad   = !empty($_GET['ad_id']) ? intval($_GET['ad_id']) : 0;
 
         $_SESSION['from_ad'] = $from_ad; // 用户点击的广告ID
@@ -244,10 +242,12 @@ if (!defined('INIT_NO_USERS'))
 
         if (!defined('INGORE_VISIT_STATS'))
         {
+            // 统计访问信息
             visit_stats();
         }
     }
 
+    // 如果 user_id 为空
     if (empty($_SESSION['user_id']))
     {
         if ($user->get_cookie())
@@ -303,6 +303,7 @@ if (!defined('INIT_NO_USERS'))
         }
     }
 
+    // 注入 $_SESSION 到模板
     if (isset($smarty))
     {
         $smarty->assign('ecs_session', $_SESSION);

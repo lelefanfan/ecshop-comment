@@ -15,17 +15,17 @@
 
 class cls_template
 {
-    var $template_dir   = '';
-    var $cache_dir      = '';
-    var $compile_dir    = '';
-    var $cache_lifetime = 3600; // 缓存更新时间, 默认 3600 秒
-    var $direct_output  = false;
-    var $caching        = false;
+    var $template_dir   = ''; // 模板目录
+    var $cache_dir      = ''; // 缓存目录
+    var $compile_dir    = ''; // 编译目录
+    var $cache_lifetime = 3600; // 缓存更新时间, 默认 3600 秒（60 分钟）
+    var $direct_output  = false; // 直接输出
+    var $caching        = false; // 缓存开关
     var $template       = array();
     var $force_compile  = false;
 
-    var $_var           = array();
-    var $_echash        = '45ea207d7a2b68c49582d2d22adf953a';
+    var $_var           = array(); // 保存分派变量
+    var $_echash        = '45ea207d7a2b68c49582d2d22adf953a'; // 哈希值
     var $_foreach       = array();
     var $_current_file  = '';
     var $_expires       = 0;
@@ -43,18 +43,23 @@ class cls_template
         $this->cls_template();
     }
 
+    /**
+     * cls_template 构造函数
+     * @return [type] [description]
+     */
     function cls_template()
     {
-        $this->_errorlevel = error_reporting();
-        $this->_nowtime    = time();
+        $this->_errorlevel = error_reporting(); // 获取错误级别
+        $this->_nowtime    = time(); // 获取当前时间
         if (defined('EC_CHARSET'))
         {
-            $charset = EC_CHARSET;
+            $charset = EC_CHARSET; // 设置编码
         }
         else
         {
             $charset = 'utf-8';
         }
+        // 输出头信息
         header('Content-type: text/html; charset='.$charset);
     }
 
@@ -92,8 +97,8 @@ class cls_template
      * 显示页面函数
      *
      * @access  public
-     * @param   string      $filename
-     * @param   sting      $cache_id
+     * @param   string     $filename     模板文件名
+     * @param   sting      $cache_id     缓存id
      *
      * @return  void
      */

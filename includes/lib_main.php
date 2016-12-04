@@ -1097,15 +1097,16 @@ function visit_stats()
     {
         return;
     }
+    // 获取当前时间
     $time = gmtime();
     /* 检查客户端是否存在访问统计的cookie */
     $visit_times = (!empty($_COOKIE['ECS']['visit_times'])) ? intval($_COOKIE['ECS']['visit_times']) + 1 : 1;
     setcookie('ECS[visit_times]', $visit_times, $time + 86400 * 365, '/');
 
-    $browser  = get_user_browser();
-    $os       = get_os();
-    $ip       = real_ip();
-    $area     = ecs_geoip($ip);
+    $browser  = get_user_browser(); // 获得浏览器名称和版本
+    $os       = get_os(); // 获得客户端的操作系统
+    $ip       = real_ip(); // 获得用户的真实IP地址
+    $area     = ecs_geoip($ip); //获得ip所在地区
 
     /* 语言 */
     if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
@@ -1142,7 +1143,7 @@ function visit_stats()
     {
         $domain = $path = '';
     }
-
+    
     $sql = 'INSERT INTO ' . $GLOBALS['ecs']->table('stats') . ' ( ' .
                 'ip_address, visit_times, browser, system, language, area, ' .
                 'referer_domain, referer_path, access_url, access_time' .
@@ -1640,28 +1641,28 @@ function assign_template($ctype = '', $catlist = array())
 {
     global $smarty;
 
-    $smarty->assign('image_width',   $GLOBALS['_CFG']['image_width']);
-    $smarty->assign('image_height',  $GLOBALS['_CFG']['image_height']);
-    $smarty->assign('points_name',   $GLOBALS['_CFG']['integral_name']);
+    $smarty->assign('image_width',   $GLOBALS['_CFG']['image_width']); // 商品图片宽度
+    $smarty->assign('image_height',  $GLOBALS['_CFG']['image_height']); // 商品图片高度
+    $smarty->assign('points_name',   $GLOBALS['_CFG']['integral_name']); // 点数名称：积分
     $smarty->assign('qq',            explode(',', $GLOBALS['_CFG']['qq']));
     $smarty->assign('ww',            explode(',', $GLOBALS['_CFG']['ww']));
     $smarty->assign('ym',            explode(',', $GLOBALS['_CFG']['ym']));
     $smarty->assign('msn',           explode(',', $GLOBALS['_CFG']['msn']));
     $smarty->assign('skype',         explode(',', $GLOBALS['_CFG']['skype']));
-    $smarty->assign('stats_code',    $GLOBALS['_CFG']['stats_code']);
-    $smarty->assign('copyright',     sprintf($GLOBALS['_LANG']['copyright'], date('Y'), $GLOBALS['_CFG']['shop_name']));
-    $smarty->assign('shop_name',     $GLOBALS['_CFG']['shop_name']);
-    $smarty->assign('service_email', $GLOBALS['_CFG']['service_email']);
-    $smarty->assign('service_phone', $GLOBALS['_CFG']['service_phone']);
-    $smarty->assign('shop_address',  $GLOBALS['_CFG']['shop_address']);
-    $smarty->assign('licensed',      license_info());
-    $smarty->assign('ecs_version',   VERSION);
-    $smarty->assign('icp_number',    $GLOBALS['_CFG']['icp_number']);
-    $smarty->assign('username',      !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : '');
-    $smarty->assign('category_list', cat_list(0, 0, true,  2, false));
-    $smarty->assign('catalog_list',  cat_list(0, 0, false, 1, false));
+    $smarty->assign('stats_code',    $GLOBALS['_CFG']['stats_code']); // 统计代码
+    $smarty->assign('copyright',     sprintf($GLOBALS['_LANG']['copyright'], date('Y'), $GLOBALS['_CFG']['shop_name'])); //版权信息
+    $smarty->assign('shop_name',     $GLOBALS['_CFG']['shop_name']); // 商店名称
+    $smarty->assign('service_email', $GLOBALS['_CFG']['service_email']); // 客服邮件
+    $smarty->assign('service_phone', $GLOBALS['_CFG']['service_phone']); // 客服电话
+    $smarty->assign('shop_address',  $GLOBALS['_CFG']['shop_address']); // 商店地址
+    $smarty->assign('licensed',      license_info()); // Licensed信息
+    $smarty->assign('ecs_version',   VERSION); // EC版本
+    $smarty->assign('icp_number',    $GLOBALS['_CFG']['icp_number']); // ICP证书号
+    $smarty->assign('username',      !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : ''); // 会员名称
+    $smarty->assign('category_list', cat_list(0, 0, true,  2, false)); // 获得指定分类下的子分类的数组
+    $smarty->assign('catalog_list',  cat_list(0, 0, false, 1, false)); // 获得指定分类下的子分类的数组
     $smarty->assign('navigator_list',        get_navigator($ctype, $catlist));  //自定义导航栏
-
+    // 前台搜索关键字
     if (!empty($GLOBALS['_CFG']['search_keywords']))
     {
         $searchkeywords = explode(',', trim($GLOBALS['_CFG']['search_keywords']));
@@ -1721,6 +1722,7 @@ function get_user_bonus($user_id = 0)
 function set_affiliate()
 {
     $config = unserialize($GLOBALS['_CFG']['affiliate']);
+    // p($config);die;
     if (!empty($_GET['u']) && $config['on'] == 1)
     {
         if(!empty($config['config']['expire']))

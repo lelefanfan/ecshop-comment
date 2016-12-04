@@ -23,16 +23,14 @@
 <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
 <script>
 if (Object.prototype.toJSONString){
-  var oldToJSONString = Object.toJSONString;
-  Object.prototype.toJSONString = function(){
-    if (arguments.length > 0){
-      return false;
-    }else{
-      return oldToJSONString.apply(this, arguments);
-    }
-  }
-}
-</script>
+      var oldToJSONString = Object.toJSONString;
+      Object.prototype.toJSONString = function(){
+        if (arguments.length > 0){
+          return false;
+        }else{
+          return oldToJSONString.apply(this, arguments);
+        }
+}}</script>
 <div class="indexpage clearfix">
   <div class="index-cat">
     <!-- #BeginLibraryItem "/library/index_category_tree.lbi" --><!-- #EndLibraryItem --> 

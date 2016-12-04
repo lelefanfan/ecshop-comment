@@ -15,7 +15,7 @@
 
 if (!defined('IN_ECS'))
 {
-    die('Hacking attempt');
+    die('Hacking attempt'); // 黑客攻击
 }
 
 /* 模块的基本信息 */

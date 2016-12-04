@@ -15,11 +15,12 @@
 
 if (!defined('IN_ECS'))
 {
-    die('Hacking attempt');
+    die('Hacking attempt'); // 黑客攻击
 }
 
 /* 可以设置内容的模板 */
 $template_files = array(
+    'demo.dwt',
     'index.dwt',
     'article.dwt',
     'article_cat.dwt',
@@ -51,6 +52,8 @@ $template_files = array(
 
 /* 每个模板允许设置的库项目 */
 $page_libs = array(
+    'demo' => array(
+    ),
     'article' => array(
         '/library/ur_here.lbi' => 0,
         '/library/search_form.lbi' => 0,

@@ -150,6 +150,25 @@
     <region name=""/>
     <region name=""/>
   </file>
+  <file name="demo.dwt">
+    <region name="">
+      <lib>cart</lib>
+      <lib>category_tree</lib>
+      <lib>top10</lib>
+      <lib>promotion_info</lib>
+      <lib>auction</lib>
+      <lib>group_buy</lib>
+      <lib>order_query</lib>
+      <lib>invoice_query</lib>
+      <lib>vote_list</lib>
+      <lib>email_list</lib>
+    </region>
+    <region name="">
+      <lib>recommend_best</lib>
+      <lib>recommend_new</lib>
+      <lib>recommend_hot</lib>
+    </region>
+  </file>
   <file name="index.dwt">
     <region name="">
       <lib>cart</lib>
@@ -163,7 +182,6 @@
       <lib>vote_list</lib>
       <lib>email_list</lib>
     </region>
-    <region name="վ"/>
     <region name="">
       <lib>recommend_best</lib>
       <lib>recommend_new</lib>

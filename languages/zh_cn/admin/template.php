@@ -54,6 +54,7 @@ $_LANG['backup_failed'] = '备份模板文件失败，请检查templates/backup 
 $_LANG['not_editable'] = '非可编辑区库文件无选择项';
 
 /* 每一个模板文件对应的语言 */
+$_LANG['template_files']['demo'] = 'Demo模板';
 $_LANG['template_files']['article'] = '文章内容模板';
 $_LANG['template_files']['article_cat'] = '文章分类模板';
 $_LANG['template_files']['brand'] = '品牌专区';

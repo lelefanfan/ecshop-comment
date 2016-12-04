@@ -220,8 +220,11 @@ function init_users()
     {
         return $cls;
     }
+    // 载入会员数据处理类，该功能可以在后台会员管理->会员整合功能进行设置，用于与其它系统进行整合
     include_once(ROOT_PATH . 'includes/modules/integrates/' . $GLOBALS['_CFG']['integrate_code'] . '.php');
+    // 获取整合配置
     $cfg = unserialize($GLOBALS['_CFG']['integrate_config']);
+    // 实例化会员数据处理类
     $cls = new $GLOBALS['_CFG']['integrate_code']($cfg);
 
     return $cls;
