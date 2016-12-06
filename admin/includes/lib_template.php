@@ -385,7 +385,7 @@ function get_template_info($template_name, $template_style='')
 function get_template_region($tmp_name, $tmp_file, $lib=true)
 {
     global $dyna_libs;
-
+    // 获取模板文件
     $file = '../themes/' . $tmp_name . '/' . $tmp_file;
 
     /* 将模版文件的内容读入内存 */
@@ -394,6 +394,7 @@ function get_template_region($tmp_name, $tmp_file, $lib=true)
     /* 获得所有编辑区域 */
     static $regions = array();
 
+    // 获取除 doctitle 和 head 之外的编辑区域
     if (empty($regions))
     {
         $matches = array();
@@ -416,6 +417,8 @@ function get_template_region($tmp_name, $tmp_file, $lib=true)
     {
         return $regions;
     }
+
+    // 同时返回区域下库项目
 
     $libs = array();
     /* 遍历所有编辑区 */

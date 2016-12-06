@@ -178,6 +178,7 @@ function admin_priv($priv_str, $msg_type = '' , $msg_output = true)
 
     if (strpos(',' . $_SESSION['action_list'] . ',', ',' . $priv_str . ',') === false)
     {
+        // 没有权限
         $link[] = array('text' => $_LANG['go_back'], 'href' => 'javascript:history.back(-1)');
         if ( $msg_output)
         {

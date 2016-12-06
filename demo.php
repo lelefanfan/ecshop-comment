@@ -16,6 +16,13 @@
 define('IN_ECS', true);
 // 载入前台公用文件
 require(dirname(__FILE__) . '/includes/init.php');
+$smarty->caching = false;
+$smarty->assign('uname','ABC');
+$smarty->display('demo.dwt');
+die;
+
+
+
 
 // 检测调试模式设置模板缓存类型
 if ((DEBUG_MODE & 2) != 2)

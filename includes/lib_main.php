@@ -1329,7 +1329,7 @@ function get_dyna_libs($theme, $tmp)
 {
     $tmp_arr = explode('.', $tmp);
     $ext = end($tmp_arr);
-    $tmp = basename($tmp,".$ext");
+    $tmp = basename($tmp,".$ext"); //获取模板文件名
     $sql = 'SELECT region, library, sort_order, id, number, type' .
             ' FROM ' . $GLOBALS['ecs']->table('template') .
             " WHERE theme = '$theme' AND filename = '" . $tmp . "' AND type > 0 AND remarks=''".

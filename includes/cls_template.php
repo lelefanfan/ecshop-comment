@@ -27,11 +27,11 @@ class cls_template
     var $_var           = array(); // 保存分派变量
     var $_echash        = '45ea207d7a2b68c49582d2d22adf953a'; // 哈希值
     var $_foreach       = array();
-    var $_current_file  = '';
+    var $_current_file  = ''; // 存放当前模板文件路径
     var $_expires       = 0;
     var $_errorlevel    = 0;
     var $_nowtime       = null;
-    var $_checkfile     = true;
+    var $_checkfile     = true; // 检查模板文件（true：如果文件不存在就拼接路径；false：直接拼接路径）
     var $_foreachmark   = '';
     var $_seterror      = 0;
 
@@ -151,6 +151,7 @@ class cls_template
         }
         else
         {
+            // 获取模板文件路径
             if ($this->_checkfile)
             {
                 if (!file_exists($filename))
@@ -162,6 +163,7 @@ class cls_template
             {
                 $filename = $this->template_dir . '/' . $filename;
             }
+
 
             if ($this->direct_output)
             {
@@ -285,11 +287,15 @@ class cls_template
      */
     function fetch_str($source)
     {
-        if (!defined('ECS_ADMIN'))
+
+        if (!defined('ECS_ADMIN')) // 如果是前台
         {
+            // 前台模板文件预处理
             $source = $this->smarty_prefilter_preCompile($source);
         }
+        // 禁止在模板中执行的函数
         $source=preg_replace("/([^a-zA-Z0-9_]{1,1})+(copy|fputs|fopen|file_put_contents|fwrite|eval|phpinfo)+( |\()/is", "", $source);
+        /*  转义php界定符，例如<?php ?> 等  */
         if(preg_match_all('~(<\?(?:\w+|=)?|\?>|language\s*=\s*[\"\']?php[\"\']?)~is', $source, $sp_match))
         {
             $sp_match[1] = array_unique($sp_match[1]);
@@ -302,7 +308,7 @@ class cls_template
                  $source= str_replace('%%%SMARTYSP'.$curr_sp.'%%%', '<?php echo \''.str_replace("'", "\'", $sp_match[1][$curr_sp]).'\'; ?>'."\n", $source);
             }
         }
-        
+        // 查找模板中所有 {} 中的模板标签内容（匹配条件是"/{([^\}\{\n]*)}/e"），然后执行 $this->select() 方法
         if (!function_exists('version_compare') || version_compare(phpversion(), '5.3.0', '<')) {
             return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
         } else {
@@ -1073,9 +1079,14 @@ class cls_template
         return $str;
     }
 
+    /**
+     * smarty_prefilter_preCompile EC前台模板预编译
+     * @param  string $source 模板文件源码
+     * @return [type]         [description]
+     */
     function smarty_prefilter_preCompile($source)
     {
-        $file_type = strtolower(strrchr($this->_current_file, '.'));
+        $file_type = strtolower(strrchr($this->_current_file, '.')); // 模板文件后缀
         $tmp_dir   = 'themes/' . $GLOBALS['_CFG']['template'] . '/'; // 模板所在路径
 
         /**
@@ -1093,13 +1104,14 @@ class cls_template
             }
 
             /* 检查有无动态库文件，如果有为其赋值 */
-            $dyna_libs = get_dyna_libs($GLOBALS['_CFG']['template'], $this->_current_file);
+            $dyna_libs = get_dyna_libs($GLOBALS['_CFG']['template'], $this->_current_file); // 获取指定主题某个模板的主题的动态模块
+
             if ($dyna_libs)
             {
                 foreach ($dyna_libs AS $region => $libs)
                 {
                     $pattern = '/<!--\\s*TemplateBeginEditable\\sname="'. $region .'"\\s*-->(.*?)<!--\\s*TemplateEndEditable\\s*-->/s';
-
+                    // 如果在该模板中找到其区域代码
                     if (preg_match($pattern, $source, $reg_match))
                     {
                         $reg_content = $reg_match[1];
@@ -1111,6 +1123,7 @@ class cls_template
                             $lib_pattern .= '|' . str_replace('/', '\/', substr($lib, 1));
                         }
                         $lib_pattern = '/{include\sfile=(' . substr($lib_pattern, 1) . ')}/';
+
                         /* 修改$reg_content中的内容 */
                         $GLOBALS['libs'] = $libs;
                         $reg_content = preg_replace_callback($lib_pattern, 'dyna_libs_replace', $reg_content);

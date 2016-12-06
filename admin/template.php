@@ -96,21 +96,29 @@ if ($_REQUEST['act'] == 'list')
 
 if ($_REQUEST['act'] == 'setup')
 {
-    admin_priv('template_setup');
+    admin_priv('template_setup'); // 权限检测
 
-    $template_theme = $_CFG['template'];
+    $template_theme = $_CFG['template']; // 模板主题
+    // 当前模板
     $curr_template  = empty($_REQUEST['template_file']) ? 'index' : $_REQUEST['template_file'];
-
+    // 存储当前模板所有库项目，并对模板中区域内存在库设定区域、排序、是否显示
     $temp_options   = array();
+    // 获取所有区域（不包含 doctitle 和 head 区域），从模板文件中获取
     $temp_regions   = get_template_region($template_theme, $curr_template.'.dwt', false);
+    // 获取所有区域（不包含 doctitle 和 head 区域）及区域内库列表，从模板文件中获取
     $temp_libs      = get_template_region($template_theme, $curr_template.'.dwt', true);
-
+    // p($temp_libs);die;
+    // 获取当前模板下允许设置的库项目，从主题模板里的 libs.xml 文件中获取    
     $editable_libs      = get_editable_libs($curr_template, $page_libs[$curr_template]);
+
+    
 
     if (empty($editable_libs))
     {
         /* 获取数据库中数据，并跟模板中数据核对,并设置动态内容 */
         /* 固定内容 */
+
+        // PS：$page_libs 保存的是每个模板允许设置的库项目，从 './admin/includes/lib_template' 中获取
         foreach ($page_libs[$curr_template] AS $val => $number_enabled)
         {
             $lib = basename(strtolower(substr($val, 0, strpos($val, '.'))));
@@ -124,29 +132,34 @@ if ($_REQUEST['act'] == 'setup')
                 $temp_options[$lib]['number'] = $number_enabled;
             }
         }
+
     }
     else
     {
         /* 获取数据库中数据，并跟模板中数据核对,并设置动态内容 */
         /* 固定内容 */
+
+        // PS：$page_libs 保存的是每个模板全部的库项目，从 './admin/includes/lib_template' 中获取
         foreach ($page_libs[$curr_template] AS $val => $number_enabled)
         {
-            $lib = basename(strtolower(substr($val, 0, strpos($val, '.'))));
-            if (!in_array($lib, $GLOBALS['dyna_libs']))
+            $lib = basename(strtolower(substr($val, 0, strpos($val, '.')))); // 获取库文件名
+            // 如果当前库文件名不属于动态库项目
+            if (!in_array($lib, $GLOBALS['dyna_libs'])) // $GLOBALS['dyna_libs'] 数据来源于 './admin/includes/lib_template' 文件
             {
                 /* 先排除动态内容 */
-                $temp_options[$lib]            = get_setted($val, $temp_libs);
-                $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib];
-                $temp_options[$lib]['library'] = $val;
-                $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0;
+                $temp_options[$lib]            = get_setted($val, $temp_libs); // 获得指定库项目在模板中的设置内容( array('region' => '', 'sort_order' => 0, 'display' => 0) )
+                $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib]; //存储库文件中文名称
+                $temp_options[$lib]['library'] = $val; //存储库文件路径
+                $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0; //启用
                 $temp_options[$lib]['number'] = $number_enabled;
 
                 if (!in_array($lib, $editable_libs))
                 {
-                    $temp_options[$lib]['editable'] = 1;
+                    $temp_options[$lib]['editable'] = 1; // 不可编辑
                 }
             }
         }
+        // p($temp_options);die;
     }
 
     /* 动态内容 */
@@ -178,7 +191,7 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
-
+    // 循环当前模板区域
     foreach ($temp_libs AS $val)
     {
         /* 对动态内容赋值 */
@@ -236,10 +249,10 @@ if ($_REQUEST['act'] == 'setup')
     }
 
     assign_query_info();
-    $smarty->assign('ur_here',            $_LANG['03_template_setup']);
-    $smarty->assign('curr_template_file', $curr_template);
-    $smarty->assign('temp_options',       $temp_options);
-    $smarty->assign('temp_regions',       $temp_regions);
+    $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 设置模版
+    $smarty->assign('curr_template_file', $curr_template); // 当前模板
+    $smarty->assign('temp_options',       $temp_options); // 当前模板库项目
+    $smarty->assign('temp_regions',       $temp_regions); // 当前模板区域
     $smarty->assign('cate_goods',         $cate_goods);
     $smarty->assign('brand_goods',        $brand_goods);
     $smarty->assign('cat_articles',       $cat_articles);

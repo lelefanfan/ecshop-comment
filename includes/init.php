@@ -47,7 +47,7 @@ if (!file_exists(ROOT_PATH . 'data/install.lock') && !file_exists(ROOT_PATH . 'i
 @ini_set('session.use_trans_sid', 0); // 是否使用明码在URL中显示SID(会话ID)
 @ini_set('session.use_cookies',   1); // 是否使用cookie在客户端保存会话ID
 @ini_set('session.auto_start',    0); // 在客户访问任何页面时都自动初始化会话，默认禁止
-// ？？？
+// 错误设置
 @ini_set('display_errors',        1); // 是否将错误信息作为输出的一部分显示
 
 // include载入路径设置
@@ -170,7 +170,7 @@ if (!defined('INIT_NO_USERS'))
 {
     /* 初始化session */
     include(ROOT_PATH . 'includes/cls_session.php');
-    // session设置
+    // 创建session类
     $sess = new cls_session($db, $ecs->table('sessions'), $ecs->table('sessions_data'));
 
     define('SESS_ID', $sess->get_session_id());
@@ -192,8 +192,8 @@ if (!defined('INIT_NO_SMARTY'))
 
     $smarty->cache_lifetime = $_CFG['cache_time'];
     $smarty->template_dir   = ROOT_PATH . 'themes/' . $_CFG['template'];
-    $smarty->cache_dir      = ROOT_PATH . 'temp/caches';
-    $smarty->compile_dir    = ROOT_PATH . 'temp/compiled';
+    $smarty->cache_dir      = ROOT_PATH . 'temp/caches'; // 缓存目录
+    $smarty->compile_dir    = ROOT_PATH . 'temp/compiled'; // 编译目录
 
     if ((DEBUG_MODE & 2) == 2)
     {
