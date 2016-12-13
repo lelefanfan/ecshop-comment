@@ -29,7 +29,16 @@
 ?>
   <tr>
     <td class="first-cell"><?php echo $this->_var['library']['desc']; ?></td>
-    <td><select name="regions[<?php echo $this->_var['lib_name']; ?>]"><?php if ($this->_var['library']['editable'] == 1): ?><option value=""><?php echo $this->_var['lang']['not_editable']; ?></option><?php else: ?><option value=""><?php echo $this->_var['lang']['select_plz']; ?></option><?php echo $this->html_options(array('values'=>$this->_var['temp_regions'],'output'=>$this->_var['temp_regions'],'selected'=>$this->_var['library']['region'])); ?><?php endif; ?></select></td>
+    <td>
+      <select name="regions[<?php echo $this->_var['lib_name']; ?>]">
+        <?php if ($this->_var['library']['editable'] == 1): ?>
+          <option value=""><?php echo $this->_var['lang']['not_editable']; ?></option>
+        <?php else: ?>
+          <option value=""><?php echo $this->_var['lang']['select_plz']; ?></option>
+          <?php echo $this->html_options(array('values'=>$this->_var['temp_regions'],'output'=>$this->_var['temp_regions'],'selected'=>$this->_var['library']['region'])); ?>
+        <?php endif; ?>
+      </select>
+    </td>
     <td><input type="text" name="sort_order[<?php echo $this->_var['lib_name']; ?>]" value="<?php echo $this->_var['library']['sort_order']; ?>" size="4" <?php if ($this->_var['library']['editable'] == 1): ?> disabled <?php endif; ?>/></td>
     <td><input type="hidden" name="map[<?php echo $this->_var['lib_name']; ?>]" value="<?php echo $this->_var['library']['library']; ?>" /></td>
     <td><?php if ($this->_var['library']['number_enabled']): ?><input type="text" name="number[<?php echo $this->_var['lib_name']; ?>]" value="<?php echo $this->_var['library']['number']; ?>" size="4" /><?php else: ?>&nbsp;<?php endif; ?></td>

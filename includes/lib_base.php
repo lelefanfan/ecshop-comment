@@ -983,6 +983,7 @@ function ecs_header($string, $replace = true, $http_response_code = 0)
     {
         echo '<script type="text/javascript">window.location.href="' . $string . '";</script>';
     }
+    // 过滤空格及换行
     $string = str_replace(array("\r", "\n"), array('', ''), $string);
 
     if (preg_match('/^\s*location:/is', $string))

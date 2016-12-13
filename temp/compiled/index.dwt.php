@@ -60,8 +60,9 @@ if (Object.prototype.toJSONString){
         </div>
         <div class="goods-right">
         
-        <?php $this->assign('cat_goods',$this->_var['cat_goods_24']); ?><?php $this->assign('goods_cat',$this->_var['goods_cat_24']); ?><?php echo $this->fetch('library/cat_goods.lbi'); ?>
-        
+<?php $this->assign('articles',$this->_var['articles_4']); ?><?php $this->assign('articles_cat',$this->_var['articles_cat_4']); ?><?php echo $this->fetch('library/cat_articles.lbi'); ?>
+<?php $this->assign('cat_goods',$this->_var['cat_goods_24']); ?><?php $this->assign('goods_cat',$this->_var['goods_cat_24']); ?><?php echo $this->fetch('library/cat_goods.lbi'); ?>
+
         </div>
       </div>
       <div class="goods-title">2F 数码时尚</div>

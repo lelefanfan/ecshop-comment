@@ -491,9 +491,10 @@ function move_plugin_library($tmp_name, &$msg)
 function get_setted($lib, &$arr)
 {
     $options = array('region' => '', 'sort_order' => 0, 'display' => 0);
-
+    // 循环当前模板所有库文件
     foreach ($arr AS $key => $val)
     {
+        // 如果当前模板库文件存在于当前模板区域库中
         if ($lib == $val['library'])
         {
             $options['region']     = $val['region'];

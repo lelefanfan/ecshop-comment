@@ -27,7 +27,16 @@
   {foreach from=$temp_options item=library key=lib_name}
   <tr>
     <td class="first-cell">{$library.desc}</td>
-    <td><select name="regions[{$lib_name}]">{if $library.editable eq 1}<option value="">{$lang.not_editable}</option>{else}<option value="">{$lang.select_plz}</option>{html_options values=$temp_regions output=$temp_regions selected=$library.region}{/if}</select></td>
+    <td>
+      <select name="regions[{$lib_name}]">
+        {if $library.editable eq 1}
+          <option value="">{$lang.not_editable}</option>
+        {else}
+          <option value="">{$lang.select_plz}</option>
+          {html_options values=$temp_regions output=$temp_regions selected=$library.region}
+        {/if}
+      </select>
+    </td>
     <td><input type="text" name="sort_order[{$lib_name}]" value="{$library.sort_order}" size="4" {if $library.editable eq 1} disabled {/if}/></td>
     <td><input type="hidden" name="map[{$lib_name}]" value="{$library.library}" /></td>
     <td>{if $library.number_enabled}<input type="text" name="number[{$lib_name}]" value="{$library.number}" size="4" />{else}&nbsp;{/if}</td>

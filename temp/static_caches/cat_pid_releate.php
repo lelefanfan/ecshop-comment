@@ -119,19 +119,6 @@ $data = array (
   ),
   9 => 
   array (
-    'cat_id' => '4',
-    'cat_name' => '3G手机',
-    'measure_unit' => '',
-    'parent_id' => '1',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '0',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => '2',
-  ),
-  10 => 
-  array (
     'cat_id' => '3',
     'cat_name' => '小型手机',
     'measure_unit' => '臺',
@@ -142,6 +129,19 @@ $data = array (
     'sort_order' => '50',
     'has_children' => '0',
     'goods_num' => '3',
+  ),
+  10 => 
+  array (
+    'cat_id' => '4',
+    'cat_name' => '3G手机',
+    'measure_unit' => '',
+    'parent_id' => '1',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => '2',
   ),
   11 => 
   array (
@@ -210,6 +210,19 @@ $data = array (
   ),
   16 => 
   array (
+    'cat_id' => '29',
+    'cat_name' => '家用空调',
+    'measure_unit' => '',
+    'parent_id' => '27',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => 0,
+  ),
+  17 => 
+  array (
     'cat_id' => '30',
     'cat_name' => '家电配件',
     'measure_unit' => '',
@@ -221,7 +234,7 @@ $data = array (
     'has_children' => '0',
     'goods_num' => 0,
   ),
-  17 => 
+  18 => 
   array (
     'cat_id' => '31',
     'cat_name' => '洗衣机',
@@ -234,7 +247,7 @@ $data = array (
     'has_children' => '0',
     'goods_num' => 0,
   ),
-  18 => 
+  19 => 
   array (
     'cat_id' => '28',
     'cat_name' => '平板电脑',
@@ -247,23 +260,10 @@ $data = array (
     'has_children' => '0',
     'goods_num' => 0,
   ),
-  19 => 
+  20 => 
   array (
     'cat_id' => '32',
     'cat_name' => '冰箱',
-    'measure_unit' => '',
-    'parent_id' => '27',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '0',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => 0,
-  ),
-  20 => 
-  array (
-    'cat_id' => '29',
-    'cat_name' => '家用空调',
     'measure_unit' => '',
     'parent_id' => '27',
     'is_show' => '1',

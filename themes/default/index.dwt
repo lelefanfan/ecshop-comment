@@ -62,29 +62,37 @@ if (Object.prototype.toJSONString){
         </div>
         <div class="goods-right">
         <!-- TemplateBeginEditable name="1层产品" -->
-        <!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
+<!-- #BeginLibraryItem "/library/cat_articles.lbi" -->
 
-          <div class="all_ms">
-            <!--{foreach from=$cat_goods item=goods}-->
-            <a class="goodsItem" href="{$goods.url}"> <div  class="img-box"><img src="{$goods.thumb}" alt="{$goods.name|escape:html}" class="goodsimg" /></div>
-            <div class="goods-brief">{$goods.brief|truncate:20}</div>
-              <div class="gos-title">{$goods.short_name|escape:html}</div> 
-          	<div class="prices">
-          	    <!-- {if $goods.promote_price neq ""} -->
-              <font class="shop_s">{$lang.promote_price}<b>{$goods.promote_price}</b></font>
-              <!-- {else}-->
-              <font class="shop_s"><b>{$goods.shop_price}</b></font>
-              <!--{/if}-->
-          	</div>
-          	 
+<ul>
+  <!--{foreach from=$articles item=article_item}--><li>
+  <a href="{$article_item.url}" title="{$article_item.title|escape:html}">{$article_item.short_title}</a> <span>{$article_item.add_time}</span></li>
+  <!--{/foreach}--></ul>
 
-            </a>
-            <!--{/foreach}-->
-            <div class="clear0"></div>
-          </div>
+ <!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
 
-        <!-- #EndLibraryItem -->
-        <!-- TemplateEndEditable -->
+<div class="all_ms">
+  <!--{foreach from=$cat_goods item=goods}-->
+  <a class="goodsItem" href="{$goods.url}"> <div  class="img-box"><img src="{$goods.thumb}" alt="{$goods.name|escape:html}" class="goodsimg" /></div>
+  <div class="goods-brief">{$goods.brief|truncate:20}</div>
+    <div class="gos-title">{$goods.short_name|escape:html}</div> 
+	<div class="prices">
+	    <!-- {if $goods.promote_price neq ""} -->
+    <font class="shop_s">{$lang.promote_price}<b>{$goods.promote_price}</b></font>
+    <!-- {else}-->
+    <font class="shop_s"><b>{$goods.shop_price}</b></font>
+    <!--{/if}-->
+	</div>
+	 
+
+  </a>
+  <!--{/foreach}-->
+  <div class="clear0"></div>
+</div>
+
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
         </div>
       </div>
       <div class="goods-title">2F 数码时尚</div>

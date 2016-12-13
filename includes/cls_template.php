@@ -28,7 +28,7 @@ class cls_template
     var $_echash        = '45ea207d7a2b68c49582d2d22adf953a'; // 哈希值
     var $_foreach       = array();
     var $_current_file  = ''; // 存放当前模板文件路径
-    var $_expires       = 0;
+    var $_expires       = 0; // 缓存过期时间
     var $_errorlevel    = 0;
     var $_nowtime       = null;
     var $_checkfile     = true; // 检查模板文件（true：如果文件不存在就拼接路径；false：直接拼接路径）
@@ -105,7 +105,7 @@ class cls_template
     function display($filename, $cache_id = '')
     {
         $this->_seterror++;
-        error_reporting(E_ALL ^ E_NOTICE);
+        error_reporting(E_ALL ^ E_NOTICE); // 设置错误级别
 
         $this->_checkfile = false;
         $out = $this->fetch($filename, $cache_id);
@@ -141,10 +141,13 @@ class cls_template
     {
         if (!$this->_seterror)
         {
-            error_reporting(E_ALL ^ E_NOTICE);
+            error_reporting(E_ALL ^ E_NOTICE); // 设置错误级别
         }
         $this->_seterror++;
-
+        /*
+        有一种用法是：$content = $smarty->fetch("str:文件或文件名不确定");
+        用处下一步确定。
+         */
         if (strncmp($filename,'str:', 4) == 0)
         {
             $out = $this->_eval($this->fetch_str(substr($filename, 4)));
@@ -175,15 +178,18 @@ class cls_template
             {
                 if ($cache_id && $this->caching)
                 {
+                    // 从缓存中获取，这里的缓存文件来自与于 $this->is_cached() 方法
                     $out = $this->template_out;
                 }
                 else
                 {
+
                     if (!in_array($filename, $this->template))
                     {
                         $this->template[] = $filename;
                     }
 
+                    // 编译模板函数                    
                     $out = $this->make_compiled($filename);
 
                     if ($cache_id)
@@ -231,40 +237,47 @@ class cls_template
      */
     function make_compiled($filename)
     {
-        $name = $this->compile_dir . '/' . basename($filename) . '.php';
-        if ($this->_expires)
-        {
+        $name = $this->compile_dir . '/' . basename($filename) . '.php'; // 编译文件名
+
+        if ($this->_expires) //存在缓存文件到期时间
+        {  
+            // 缓存时间-最大缓存时间          
             $expires = $this->_expires - $this->cache_lifetime;
         }
         else
         {
             $filestat = @stat($name);
-            $expires  = $filestat['mtime'];
+            $expires  = $filestat['mtime']; // 编译文件最后修改时间
         }
 
-        $filestat = @stat($filename);
 
+
+        $filestat = @stat($filename); // 模板文件信息
+
+        // 模板文件最后修改时间早于缓存时间 并且 不允许强制编译
         if ($filestat['mtime'] <= $expires && !$this->force_compile)
         {
-            if (file_exists($name))
+            if (file_exists($name)) // 存在编译文件
             {
-                $source = $this->_require($name);
+                $source = $this->_require($name); // 返回编译文件
                 if ($source == '')
                 {
                     $expires = 0;
                 }
             }
-            else
+            else // 不存在编译文件
             {
                 $source = '';
                 $expires = 0;
             }
         }
 
+        // 直接编译 或者 模板最后修改时间大于缓存时间 那么就进行编译
         if ($this->force_compile || $filestat['mtime'] > $expires)
         {
-            $this->_current_file = $filename;
-            $source = $this->fetch_str(file_get_contents($filename));
+            $this->_current_file = $filename; // 设置当前模板文件 
+
+            $source = $this->fetch_str(file_get_contents($filename)); // 对模板文件进行编译
 
             if (file_put_contents($name, $source, LOCK_EX) === false)
             {
@@ -293,8 +306,10 @@ class cls_template
             // 前台模板文件预处理
             $source = $this->smarty_prefilter_preCompile($source);
         }
+        // file_put_contents('a4.html', $source);die;
         // 禁止在模板中执行的函数
         $source=preg_replace("/([^a-zA-Z0-9_]{1,1})+(copy|fputs|fopen|file_put_contents|fwrite|eval|phpinfo)+( |\()/is", "", $source);
+
         /*  转义php界定符，例如<?php ?> 等  */
         if(preg_match_all('~(<\?(?:\w+|=)?|\?>|language\s*=\s*[\"\']?php[\"\']?)~is', $source, $sp_match))
         {
@@ -320,36 +335,40 @@ class cls_template
      * 判断是否缓存
      *
      * @access  public
-     * @param   string     $filename
-     * @param   sting      $cache_id
+     * @param   string     $filename     文件名
+     * @param   sting      $cache_id     缓存id
      *
      * @return  bool
      */
     function is_cached($filename, $cache_id = '')
     {
-        $cachename = basename($filename, strrchr($filename, '.')) . '_' . $cache_id;
-        if ($this->caching == true && $this->direct_output == false)
+        $cachename = basename($filename, strrchr($filename, '.')) . '_' . $cache_id; // 缓存名称
+
+        if ($this->caching == true && $this->direct_output == false) // 缓存开启
         {
-            $hash_dir = $this->cache_dir . '/' . substr(md5($cachename), 0, 1);
-            if ($data = @file_get_contents($hash_dir . '/' . $cachename . '.php'))
+            $hash_dir = $this->cache_dir . '/' . substr(md5($cachename), 0, 1); // 缓存目录
+
+            if ($data = @file_get_contents($hash_dir . '/' . $cachename . '.php')) // 缓存文件存在内容
             {
-                $data = substr($data, 13);
-                $pos  = strpos($data, '<');
-                $paradata = substr($data, 0, $pos);
-                $para     = @unserialize($paradata);
+                $data = substr($data, 13); // 获取缓存文件序列化后的内容
+                $pos  = strpos($data, '<'); // 获取缓存文件文档开始位置
+                $paradata = substr($data, 0, $pos); // 获取缓存文件序列化的对象
+                $para     = @unserialize($paradata); // 将对象反序列化
+                // 不存在缓存文件或缓存文件过期
                 if ($para === false || $this->_nowtime > $para['expires'])
                 {
                     $this->caching = false;
 
                     return false;
                 }
-                $this->_expires = $para['expires'];
+                $this->_expires = $para['expires']; // 获取缓存文件过期时间
 
-                $this->template_out = substr($data, $pos);
+                $this->template_out = substr($data, $pos); // 获取缓存文件文档内容
 
                 foreach ($para['template'] AS $val)
                 {
                     $stat = @stat($val);
+                    // 所有库文件的修改时间必须早于缓存文件，否则缓存过期
                     if ($para['maketime'] < $stat['mtime'])
                     {
                         $this->caching = false;
@@ -367,7 +386,7 @@ class cls_template
 
             return true;
         }
-        else
+        else // 缓存关闭
         {
             return false;
         }
@@ -383,16 +402,15 @@ class cls_template
      */
     function select($tag)
     {
+        // echo $tag;die;
         $tag = stripslashes(trim($tag));
 
         if (empty($tag))
         {
             return '{}';
         }
-        elseif ($tag{0} == '*' && substr($tag, -1) == '*') // 注释部分
-        {
-            return '';
-        }
+        
+
         elseif ($tag{0} == '$') // 变量
         {
 //            if(strpos($tag,"'") || strpos($tag,"]"))
@@ -579,7 +597,7 @@ class cls_template
         if (strrpos($val, '|') !== false)
         {
             $moddb = explode('|', $val);
-            $val = array_shift($moddb);
+            $val = array_shift($moddb); // 变量
         }
 
         if (empty($val))
@@ -1086,6 +1104,7 @@ class cls_template
      */
     function smarty_prefilter_preCompile($source)
     {
+
         $file_type = strtolower(strrchr($this->_current_file, '.')); // 模板文件后缀
         $tmp_dir   = 'themes/' . $GLOBALS['_CFG']['template'] . '/'; // 模板所在路径
 
@@ -1101,29 +1120,34 @@ class cls_template
                 $source      = preg_replace($pattern, $replacement, $source);
             } else {
                 include(ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'patch' . DIRECTORY_SEPARATOR . 'includes_cls_template_smarty_prefilter_preCompile.php');
-            }
+            }            
 
-            /* 检查有无动态库文件，如果有为其赋值 */
+            /* 检查有无动态库文件（从数据库中获取），如果有为其赋值 */
             $dyna_libs = get_dyna_libs($GLOBALS['_CFG']['template'], $this->_current_file); // 获取指定主题某个模板的主题的动态模块
-
+            // p($dyna_libs);die;
+            // 如果存在动态库文件
             if ($dyna_libs)
             {
+                // 循环数据库中动态库文件
                 foreach ($dyna_libs AS $region => $libs)
                 {
                     $pattern = '/<!--\\s*TemplateBeginEditable\\sname="'. $region .'"\\s*-->(.*?)<!--\\s*TemplateEndEditable\\s*-->/s';
-                    // 如果在该模板中找到其区域代码
+                    // 检测数据库中区域是否在模板中存在
                     if (preg_match($pattern, $source, $reg_match))
                     {
-                        $reg_content = $reg_match[1];
+                        $reg_content = $reg_match[1]; // 匹配模板中当前循环区域下的库文件，例如：{include file=library/xxxx.lbi}
+                        // echo $reg_content;die;
                         /* 生成匹配字串 */
-                        $keys = array_keys($libs);
+                        $keys = array_keys($libs); // 获取该区域的所有库（数据库中数据）
                         $lib_pattern = '';
                         foreach ($keys AS $lib)
                         {
                             $lib_pattern .= '|' . str_replace('/', '\/', substr($lib, 1));
+                            // echo $lib_pattern;die;
                         }
                         $lib_pattern = '/{include\sfile=(' . substr($lib_pattern, 1) . ')}/';
-
+                        // echo $lib_pattern;die;
+                        // 
                         /* 修改$reg_content中的内容 */
                         $GLOBALS['libs'] = $libs;
                         $reg_content = preg_replace_callback($lib_pattern, 'dyna_libs_replace', $reg_content);
@@ -1138,6 +1162,7 @@ class cls_template
             $source = preg_replace('/<head>/i', "<head>\r\n<meta name=\"Generator\" content=\"" . APPNAME .' ' . VERSION . "\" />",  $source);
 
             /* 修正css路径 */
+            // <link href="./css/abc.css"
             $source = preg_replace('/(<link\shref=["|\'])(?:\.\/|\.\.\/)?(css\/)?([a-z0-9A-Z_]+\.css["|\']\srel=["|\']stylesheet["|\']\stype=["|\']text\/css["|\'])/i','\1' . $tmp_dir . '\2\3', $source);
 
             /* 修正js目录下js的路径 */
@@ -1153,10 +1178,10 @@ class cls_template
          */
          elseif ($file_type == '.lbi')
          {
+
             /* 去除meta */
             $source = preg_replace('/<meta\shttp-equiv=["|\']Content-Type["|\']\scontent=["|\']text\/html;\scharset=(?:.*?)["|\']>\r?\n?/i', '', $source);
          }
-
         /* 替换文件编码头部 */
         if (strpos($source, "\xEF\xBB\xBF") !== FALSE)
         {

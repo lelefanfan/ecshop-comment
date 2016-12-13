@@ -98,8 +98,8 @@ if ($_REQUEST['act'] == 'setup')
 {
     admin_priv('template_setup'); // 权限检测
 
-    $template_theme = $_CFG['template']; // 模板主题
-    // 当前模板
+    $template_theme = $_CFG['template']; // 前台模板主题
+    // 当前需要设置的模板
     $curr_template  = empty($_REQUEST['template_file']) ? 'index' : $_REQUEST['template_file'];
     // 存储当前模板所有库项目，并对模板中区域内存在库设定区域、排序、是否显示
     $temp_options   = array();
@@ -107,7 +107,6 @@ if ($_REQUEST['act'] == 'setup')
     $temp_regions   = get_template_region($template_theme, $curr_template.'.dwt', false);
     // 获取所有区域（不包含 doctitle 和 head 区域）及区域内库列表，从模板文件中获取
     $temp_libs      = get_template_region($template_theme, $curr_template.'.dwt', true);
-    // p($temp_libs);die;
     // 获取当前模板下允许设置的库项目，从主题模板里的 libs.xml 文件中获取    
     $editable_libs      = get_editable_libs($curr_template, $page_libs[$curr_template]);
 
@@ -150,8 +149,8 @@ if ($_REQUEST['act'] == 'setup')
                 $temp_options[$lib]            = get_setted($val, $temp_libs); // 获得指定库项目在模板中的设置内容( array('region' => '', 'sort_order' => 0, 'display' => 0) )
                 $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib]; //存储库文件中文名称
                 $temp_options[$lib]['library'] = $val; //存储库文件路径
-                $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0; //启用
-                $temp_options[$lib]['number'] = $number_enabled;
+                $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0; //启动？
+                $temp_options[$lib]['number'] = $number_enabled; // 数量？
 
                 if (!in_array($lib, $editable_libs))
                 {
@@ -163,10 +162,10 @@ if ($_REQUEST['act'] == 'setup')
     }
 
     /* 动态内容 */
-    $cate_goods   = array();
-    $brand_goods  = array();
-    $cat_articles = array();
-    $ad_positions = array();
+    $cate_goods   = array(); // 分类下的商品
+    $brand_goods  = array(); // 品牌下商品
+    $cat_articles = array(); // 文章列表
+    $ad_positions = array(); // 广告位
 
     $sql = "SELECT region, library, sort_order, id, number, type FROM ".$ecs->table('template') ." ".
            "WHERE theme='$template_theme' AND filename='$curr_template' AND remarks='' ".
@@ -187,11 +186,15 @@ if ($_REQUEST['act'] == 'setup')
             $lib = basename(strtolower(substr($row['library'], 0, strpos($row['library'], '.'))));
             if (isset($lib))
             {
+                // 显示数量
                 $temp_options[$lib]['number'] = $row['number'];
             }
         }
     }
-    // 循环当前模板区域
+
+    // p($temp_options);die;
+
+    // 循环当前模板库项目
     foreach ($temp_libs AS $val)
     {
         /* 对动态内容赋值 */
@@ -247,16 +250,16 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
-
+    // p($temp_options);die;
     assign_query_info();
-    $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 设置模版
+    $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 面包屑导航名称：设置模版
     $smarty->assign('curr_template_file', $curr_template); // 当前模板
-    $smarty->assign('temp_options',       $temp_options); // 当前模板库项目
+    $smarty->assign('temp_options',       $temp_options); // 当前模板所有库项目
     $smarty->assign('temp_regions',       $temp_regions); // 当前模板区域
-    $smarty->assign('cate_goods',         $cate_goods);
-    $smarty->assign('brand_goods',        $brand_goods);
-    $smarty->assign('cat_articles',       $cat_articles);
-    $smarty->assign('ad_positions',       $ad_positions);
+    $smarty->assign('cate_goods',         $cate_goods); // 分类下的商品
+    $smarty->assign('brand_goods',        $brand_goods); // 品牌下的商品
+    $smarty->assign('cat_articles',       $cat_articles); // 文章列表
+    $smarty->assign('ad_positions',       $ad_positions); // 广告位
     $smarty->assign('arr_cates',          cat_list(0, 0, true));
     $smarty->assign('arr_brands',         get_brand_list());
     $smarty->assign('arr_article_cats',   article_cat_list(0, 0, true));
@@ -271,16 +274,23 @@ if ($_REQUEST['act'] == 'setup')
 if ($_REQUEST['act'] == 'setting')
 {
     admin_priv('template_setup');
-
-    $curr_template = $_CFG['template'];
+    // p($_POST);die;
+    $curr_template = $_CFG['template']; // 当前主题
+    // 从数据库中删除当前主题当前文件的设置模版选项
     $db->query("DELETE FROM " .$ecs->table('template'). " WHERE remarks = '' AND filename = '$_POST[template_file]' AND theme = '$curr_template'");
 
     /* 先处理固定内容 */
+
     foreach ($_POST['regions'] AS $key => $val)
     {
-        $number = isset($_POST['number'][$key]) ? intval($_POST['number'][$key]) : 0;
+        $number = isset($_POST['number'][$key]) ? intval($_POST['number'][$key]) : 0; //数量
+        // 根据这个判断，得知需要存入 ecs_template 表的库项目是：1.不是动态内容；2.显示为1或者数量大于0。
         if (!in_array($key, $GLOBALS['dyna_libs']) AND (isset($_POST['display'][$key]) AND $_POST['display'][$key] == 1 OR $number > 0))
         {
+            // 这里有一个疑问？就是为什么不需要在 ecs_template 表中插入 type、id、remarks字段
+            // 因为此处是静态内容 type 默认为0，所以不需要插入
+            // id字段在动态内容的时候才需要插入，其它时候默认为0
+            // remarks字段暂未使用
             $sql = "INSERT INTO " .$ecs->table('template').
                         "(theme, filename, region, library, sort_order, number)".
                     " VALUES ".
@@ -288,6 +298,7 @@ if ($_REQUEST['act'] == 'setting')
             $db->query($sql);
         }
     }
+
 
     /* 分类的商品 */
     if (isset($_POST['regions']['cat_goods']))
@@ -452,6 +463,7 @@ if ($_REQUEST['act'] == 'setting')
     $template_file    = '../themes/' . $curr_template . '/' . $_POST['template_file'] . '.dwt';
     $template_content = file_get_contents($template_file);
     $template_content = str_replace("\xEF\xBB\xBF", '', $template_content);
+    // 获得编辑区域
     $org_regions      = get_template_region($curr_template, $_POST['template_file'].'.dwt', false);
 
     $region_content   = '';

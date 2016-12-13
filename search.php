@@ -17,36 +17,36 @@ define('IN_ECS', true);
 
 if (!function_exists("htmlspecialchars_decode"))
 {
+    // 将特定html实体解码
     function htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
     {
         return strtr($string, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
     }
 }
 
-if (empty($_GET['encode']))
+if (empty($_GET['encode'])) // 无编码
 {
     $string = array_merge($_GET, $_POST);
-    if (get_magic_quotes_gpc())
+    if (get_magic_quotes_gpc()) // magic_quotes_gpc 开启
     {
         require(dirname(__FILE__) . '/includes/lib_base.php');
         //require(dirname(__FILE__) . '/includes/lib_common.php');
-
-        $string = stripslashes_deep($string);
+        $string = stripslashes_deep($string); // 递归方式的对变量中的特殊字符去除转义
     }
-    $string['search_encode_time'] = time();
-    $string = str_replace('+', '%2b', base64_encode(serialize($string)));
+    $string['search_encode_time'] = time(); // 搜索编码时间
+    $string = str_replace('+', '%2b', base64_encode(serialize($string))); // 编码
 
-    header("Location: search.php?encode=$string\n");
+    header("Location: search.php?encode=$string\n"); // 跳转
 
     exit;
 }
 else
 {
-    $string = base64_decode(trim($_GET['encode']));
-    if ($string !== false)
+    $string = base64_decode(trim($_GET['encode'])); // 解码
+    if ($string !== false) // 存在数据
     {
-        $string = unserialize($string);
-        if ($string !== false)
+        $string = unserialize($string); // 反序列化
+        if ($string !== false) // 存在数据
         {
             /* 用户在重定向的情况下当作一次访问 */
             if (!empty($string['search_encode_time']))
@@ -61,29 +61,31 @@ else
                 define('INGORE_VISIT_STATS', true);
             }
         }
-        else
+        else // 不存在数据
         {
             $string = array();
         }
     }
-    else
+    else // 不存在数据
     {
         $string = array();
     }
 }
 
-require(dirname(__FILE__) . '/includes/init.php');
+require(dirname(__FILE__) . '/includes/init.php'); // 载入初始化文件
 
-$_REQUEST = array_merge($_REQUEST, addslashes_deep($string));
+$_REQUEST = array_merge($_REQUEST, addslashes_deep($string)); // 合并请求变量
 
-$_REQUEST['act'] = !empty($_REQUEST['act']) ? trim($_REQUEST['act']) : '';
+
+
+$_REQUEST['act'] = !empty($_REQUEST['act']) ? trim($_REQUEST['act']) : ''; // 动作
 
 /*------------------------------------------------------ */
 //-- 高级搜索
 /*------------------------------------------------------ */
 if ($_REQUEST['act'] == 'advanced_search')
 {
-    $goods_type = !empty($_REQUEST['goods_type']) ? intval($_REQUEST['goods_type']) : 0;
+    $goods_type = !empty($_REQUEST['goods_type']) ? intval($_REQUEST['goods_type']) : 0; // 商品类型
     $attributes = get_seachable_attributes($goods_type);
     $smarty->assign('goods_type_selected', $goods_type);
     $smarty->assign('goods_type_list',     $attributes['cate']);
@@ -113,13 +115,21 @@ if ($_REQUEST['act'] == 'advanced_search')
 /*------------------------------------------------------ */
 else
 {
+     // 关键字
     $_REQUEST['keywords']   = !empty($_REQUEST['keywords'])   ? htmlspecialchars(trim($_REQUEST['keywords']))     : '';
-    $_REQUEST['brand']      = !empty($_REQUEST['brand'])      ? intval($_REQUEST['brand'])      : 0;
+    // 品牌
+    $_REQUEST['brand']      = !empty($_REQUEST['brand'])      ? intval($_REQUEST['brand'])      : 0; 
+    // 分类
     $_REQUEST['category']   = !empty($_REQUEST['category'])   ? intval($_REQUEST['category'])   : 0;
-    $_REQUEST['min_price']  = !empty($_REQUEST['min_price'])  ? intval($_REQUEST['min_price'])  : 0;
+    // 最低价格
+    $_REQUEST['min_price']  = !empty($_REQUEST['min_price'])  ? intval($_REQUEST['min_price'])  : 0; 
+    // 最高价格
     $_REQUEST['max_price']  = !empty($_REQUEST['max_price'])  ? intval($_REQUEST['max_price'])  : 0;
-    $_REQUEST['goods_type'] = !empty($_REQUEST['goods_type']) ? intval($_REQUEST['goods_type']) : 0;
+    // 商品类型
+    $_REQUEST['goods_type'] = !empty($_REQUEST['goods_type']) ? intval($_REQUEST['goods_type']) : 0; 
+    // 搜索简介，值为 1或0
     $_REQUEST['sc_ds']      = !empty($_REQUEST['sc_ds']) ? intval($_REQUEST['sc_ds']) : 0;
+    // 隐藏已脱销的商品，值为 1或0
     $_REQUEST['outstock']   = !empty($_REQUEST['outstock']) ? 1 : 0;
 
     $action = '';
@@ -166,25 +176,26 @@ else
         $action = 'form';
     }
 
+
     /* 初始化搜索条件 */
     $keywords  = '';
     $tag_where = '';
-    if (!empty($_REQUEST['keywords']))
+    if (!empty($_REQUEST['keywords'])) // 存在搜索关键词
     {
-        $arr = array();
-        if (stristr($_REQUEST['keywords'], ' AND ') !== false)
+        $arr = array(); // 存放关键词转换的条件
+        if (stristr($_REQUEST['keywords'], ' AND ') !== false) // 存在 AND
         {
             /* 检查关键字中是否有AND，如果存在就是并 */
             $arr        = explode('AND', $_REQUEST['keywords']);
             $operator   = " AND ";
         }
-        elseif (stristr($_REQUEST['keywords'], ' OR ') !== false)
+        elseif (stristr($_REQUEST['keywords'], ' OR ') !== false) // 存在 OR
         {
             /* 检查关键字中是否有OR，如果存在就是或 */
             $arr        = explode('OR', $_REQUEST['keywords']);
             $operator   = " OR ";
         }
-        elseif (stristr($_REQUEST['keywords'], ' + ') !== false)
+        elseif (stristr($_REQUEST['keywords'], ' + ') !== false) // 存在 +
         {
             /* 检查关键字中是否有加号，如果存在就是或 */
             $arr        = explode('+', $_REQUEST['keywords']);
@@ -193,26 +204,30 @@ else
         else
         {
             /* 检查关键字中是否有空格，如果存在就是并 */
-            $arr        = explode(' ', $_REQUEST['keywords']);
+            $arr        = explode(' ', $_REQUEST['keywords']); // 存在空格 ' '
             $operator   = " AND ";
         }
 
         $keywords = 'AND (';
-        $goods_ids = array();
+        $goods_ids = array(); // 商品id集合
+        // 循环关键词条件，组合查询字符串条件
         foreach ($arr AS $key => $val)
         {
+            // 判断是否添加操作符（AND 或 OR）
             if ($key > 0 && $key < count($arr) && count($arr) > 1)
             {
                 $keywords .= $operator;
             }
-            $val        = mysql_like_quote(trim($val));
-            $sc_dsad    = $_REQUEST['sc_ds'] ? " OR goods_desc LIKE '%$val%'" : '';
-            $keywords  .= "(goods_name LIKE '%$val%' OR goods_sn LIKE '%$val%' OR keywords LIKE '%$val%' $sc_dsad)";
+            $val        = mysql_like_quote(trim($val)); // 对 MYSQL LIKE 的内容进行转义
+            $sc_dsad    = $_REQUEST['sc_ds'] ? " OR goods_desc LIKE '%$val%'" : ''; // 搜索简介
+            $keywords  .= "(goods_name LIKE '%$val%' OR goods_sn LIKE '%$val%' OR keywords LIKE '%$val%' $sc_dsad)"; // LIKE 商品名称、货号、商品关键字
 
+            /* 根据关键词到 tag表 获取所有相关商品id */
             $sql = 'SELECT DISTINCT goods_id FROM ' . $ecs->table('tag') . " WHERE tag_words LIKE '%$val%' ";
             $res = $db->query($sql);
             while ($row = $db->FetchRow($res))
             {
+                // 相关商品id
                 $goods_ids[] = $row['goods_id'];
             }
 
@@ -221,58 +236,70 @@ else
         }
         $keywords .= ')';
 
-        $goods_ids = array_unique($goods_ids);
-        $tag_where = implode(',', $goods_ids);
-        if (!empty($tag_where))
+        $goods_ids = array_unique($goods_ids); // 去重复商品id
+        $tag_where = implode(',', $goods_ids); // 将商品id集合转为字符串
+        if (!empty($tag_where))  //存在 $tag_where 条件
         {
             $tag_where = 'OR g.goods_id ' . db_create_in($tag_where);
         }
     }
 
+    // 栏目id
     $category   = !empty($_REQUEST['category']) ? intval($_REQUEST['category'])        : 0;
+    // 关联子栏目id
     $categories = ($category > 0)               ? ' AND ' . get_children($category)    : '';
+    // 品牌id
     $brand      = $_REQUEST['brand']            ? " AND brand_id = '$_REQUEST[brand]'" : '';
+    // 商品数量必须大于0
     $outstock   = !empty($_REQUEST['outstock']) ? " AND g.goods_number > 0 "           : '';
-
+    // 最小价格
     $min_price  = $_REQUEST['min_price'] != 0                               ? " AND g.shop_price >= '$_REQUEST[min_price]'" : '';
+    // 最大价格
     $max_price  = $_REQUEST['max_price'] != 0 || $_REQUEST['min_price'] < 0 ? " AND g.shop_price <= '$_REQUEST[max_price]'" : '';
 
     /* 排序、显示方式以及类型 */
+    // 这里有3种显示方式（0：list；1：grid；否则就是text）
     $default_display_type = $_CFG['show_order_type'] == '0' ? 'list' : ($_CFG['show_order_type'] == '1' ? 'grid' : 'text');
+    // 默认排序规则，升序或降序
     $default_sort_order_method = $_CFG['sort_order_method'] == '0' ? 'DESC' : 'ASC';
+    // 默认3种排序类型（0：goods_id；1：shop_price；否则就是last_update）
     $default_sort_order_type   = $_CFG['sort_order_type'] == '0' ? 'goods_id' : ($_CFG['sort_order_type'] == '1' ? 'shop_price' : 'last_update');
-
+    // 类型
     $sort = (isset($_REQUEST['sort'])  && in_array(trim(strtolower($_REQUEST['sort'])), array('goods_id', 'shop_price', 'last_update'))) ? trim($_REQUEST['sort'])  : $default_sort_order_type;
+    // 顺序
     $order = (isset($_REQUEST['order']) && in_array(trim(strtoupper($_REQUEST['order'])), array('ASC', 'DESC'))) ? trim($_REQUEST['order']) : $default_sort_order_method;
+    // 显示方式
     $display  = (isset($_REQUEST['display']) && in_array(trim(strtolower($_REQUEST['display'])), array('list', 'grid', 'text'))) ? trim($_REQUEST['display'])  : (isset($_SESSION['display_search']) ? $_SESSION['display_search'] : $default_display_type);
 
     $_SESSION['display_search'] = $display;
-
+    // 页码
     $page       = !empty($_REQUEST['page'])  && intval($_REQUEST['page'])  > 0 ? intval($_REQUEST['page'])  : 1;
+    // 每页条数
     $size       = !empty($_CFG['page_size']) && intval($_CFG['page_size']) > 0 ? intval($_CFG['page_size']) : 10;
 
     $intromode = '';    //方式，用于决定搜索结果页标题图片
 
     if (!empty($_REQUEST['intro']))
     {
+        // 关联 精品、新品、热销
         switch ($_REQUEST['intro'])
         {
             case 'best':
-                $intro   = ' AND g.is_best = 1';
+                $intro   = ' AND g.is_best = 1'; // 精品
                 $intromode = 'best';
                 $ur_here = $_LANG['best_goods'];
                 break;
             case 'new':
-                $intro   = ' AND g.is_new = 1';
+                $intro   = ' AND g.is_new = 1'; // 新品
                 $intromode ='new';
                 $ur_here = $_LANG['new_goods'];
                 break;
             case 'hot':
-                $intro   = ' AND g.is_hot = 1';
+                $intro   = ' AND g.is_hot = 1'; // 热销
                 $intromode = 'hot';
                 $ur_here = $_LANG['hot_goods'];
                 break;
-            case 'promotion':
+            case 'promotion': // 促销
                 $time    = gmtime();
                 $intro   = " AND g.promote_price > 0 AND g.promote_start_date <= '$time' AND g.promote_end_date >= '$time'";
                 $intromode = 'promotion';
@@ -296,15 +323,17 @@ else
     //-- 属性检索
     /*------------------------------------------------------ */
     $attr_in  = '';
-    $attr_num = 0;
+    $attr_num = 0; // 数量
     $attr_url = '';
     $attr_arg = array();
 
-    if (!empty($_REQUEST['attr']))
+    if (!empty($_REQUEST['attr'])) // 存在属性
     {
         $sql = "SELECT goods_id, COUNT(*) AS num FROM " . $ecs->table("goods_attr") . " WHERE 0 ";
+        // 循环请求属性
         foreach ($_REQUEST['attr'] AS $key => $val)
         {
+            // $val不为空值 且 $key为数值型
             if (is_not_null($val) && is_numeric($key))
             {
                 $attr_num++;
@@ -374,7 +403,7 @@ else
         "AND (( 1 " . $categories . $keywords . $brand . $min_price . $max_price . $intro . $outstock ." ) ".$tag_where." )";
     $count = $db->getOne($sql);
 
-    $max_page = ($count> 0) ? ceil($count / $size) : 1;
+    $max_page = ($count> 0) ? ceil($count / $size) : 1; // 根据商品总数获取最大页面数
     if ($page > $max_page)
     {
         $page = $max_page;
@@ -404,7 +433,6 @@ else
             $promote_price = 0;
         }
 
-        /* 处理商品水印图片 */
         /* 处理商品水印图片 */
         $watermark_img = '';
 

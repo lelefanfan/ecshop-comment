@@ -375,6 +375,7 @@ function assign_dynamic($tmp)
 {
     $sql = 'SELECT id, number, type FROM ' . $GLOBALS['ecs']->table('template') .
         " WHERE filename = '$tmp' AND type > 0 AND remarks ='' AND theme='" . $GLOBALS['_CFG']['template'] . "'";
+        
     $res = $GLOBALS['db']->getAll($sql);
 
    foreach ($res AS $row)

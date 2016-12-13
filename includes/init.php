@@ -180,6 +180,7 @@ if(isset($_SERVER['PHP_SELF']))
 {
     $_SERVER['PHP_SELF']=htmlspecialchars($_SERVER['PHP_SELF']);
 }
+
 // SMARTY相关设置
 if (!defined('INIT_NO_SMARTY'))
 {
