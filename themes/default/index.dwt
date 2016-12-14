@@ -62,14 +62,6 @@ if (Object.prototype.toJSONString){
         </div>
         <div class="goods-right">
         <!-- TemplateBeginEditable name="1层产品" -->
-<!-- #BeginLibraryItem "/library/cat_articles.lbi" -->
-
-<ul>
-  <!--{foreach from=$articles item=article_item}--><li>
-  <a href="{$article_item.url}" title="{$article_item.title|escape:html}">{$article_item.short_title}</a> <span>{$article_item.add_time}</span></li>
-  <!--{/foreach}--></ul>
-
- <!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
 
 <div class="all_ms">

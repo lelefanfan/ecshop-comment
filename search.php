@@ -79,20 +79,19 @@ $_REQUEST = array_merge($_REQUEST, addslashes_deep($string)); // 合并请求变
 
 
 $_REQUEST['act'] = !empty($_REQUEST['act']) ? trim($_REQUEST['act']) : ''; // 动作
-
 /*------------------------------------------------------ */
 //-- 高级搜索
 /*------------------------------------------------------ */
 if ($_REQUEST['act'] == 'advanced_search')
 {
-    $goods_type = !empty($_REQUEST['goods_type']) ? intval($_REQUEST['goods_type']) : 0; // 商品类型
-    $attributes = get_seachable_attributes($goods_type);
-    $smarty->assign('goods_type_selected', $goods_type);
-    $smarty->assign('goods_type_list',     $attributes['cate']);
-    $smarty->assign('goods_attributes',    $attributes['attr']);
+    $goods_type = !empty($_REQUEST['goods_type']) ? intval($_REQUEST['goods_type']) : 0; // 商品类型id
+    $attributes = get_seachable_attributes($goods_type); // 商品类型及属性组合的集合
+    $smarty->assign('goods_type_selected', $goods_type); // 商品类型id
+    $smarty->assign('goods_type_list',     $attributes['cate']); // 商品类型名称
+    $smarty->assign('goods_attributes',    $attributes['attr']); // 商品属性集合
 
-    assign_template();
-    assign_dynamic('search');
+    assign_template(); // 分派相关变量到模板
+    assign_dynamic('search'); // 设置搜索页面动态内容
     $position = assign_ur_here(0, $_LANG['advanced_search']);
     $smarty->assign('page_title', $position['title']);    // 页面标题
     $smarty->assign('ur_here',    $position['ur_here']);  // 当前位置
@@ -100,10 +99,11 @@ if ($_REQUEST['act'] == 'advanced_search')
     $smarty->assign('categories', get_categories_tree()); // 分类树
     $smarty->assign('helps',      get_shop_help());       // 网店帮助
     $smarty->assign('top_goods',  get_top10());           // 销售排行
-    $smarty->assign('promotion_info', get_promotion_info());
-    $smarty->assign('cat_list',   cat_list(0, 0, true, 2, false));
+    $smarty->assign('promotion_info', get_promotion_info()); // 促销信息
+    $smarty->assign('cat_list',   cat_list(0, 0, true, 2, false)); // 获取全部分类
     $smarty->assign('brand_list', get_brand_list());
     $smarty->assign('action',     'form');
+
     $smarty->assign('use_storage', $_CFG['use_storage']);
 
     $smarty->display('search.dwt');
@@ -133,7 +133,7 @@ else
     $_REQUEST['outstock']   = !empty($_REQUEST['outstock']) ? 1 : 0;
 
     $action = '';
-    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'form')
+    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'form') // 高级搜索
     {
         /* 要显示高级搜索栏 */
         $adv_value['keywords']  = htmlspecialchars(stripcslashes($_REQUEST['keywords']));
@@ -570,17 +570,19 @@ function is_not_null($value)
  * 获得可以检索的属性
  *
  * @access  public
- * @params  integer $cat_id
+ * @params  integer $cat_id 商品类型id
  * @return  void
  */
 function get_seachable_attributes($cat_id = 0)
 {
+    // 属性列表
     $attributes = array(
         'cate' => array(),
         'attr' => array()
     );
 
     /* 获得可用的商品类型 */
+    // SELECT t.cat_id, cat_name FROM `ec3`.`ecs_goods_type` AS t, `ec3`.`ecs_attribute` AS a WHERE t.cat_id = a.cat_id AND t.enabled = 1 AND a.attr_index > 0 
     $sql = "SELECT t.cat_id, cat_name FROM " .$GLOBALS['ecs']->table('goods_type'). " AS t, ".
            $GLOBALS['ecs']->table('attribute') ." AS a".
            " WHERE t.cat_id = a.cat_id AND t.enabled = 1 AND a.attr_index > 0 ";
@@ -593,6 +595,7 @@ function get_seachable_attributes($cat_id = 0)
         {
             $attributes['cate'][$val['cat_id']] = $val['cat_name'];
         }
+
         $where = $cat_id > 0 ? ' AND a.cat_id = ' . $cat_id : " AND a.cat_id = " . $cat[0]['cat_id'];
 
         $sql = 'SELECT attr_id, attr_name, attr_input_type, attr_type, attr_values, attr_index, sort_order ' .

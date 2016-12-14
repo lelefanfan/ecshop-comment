@@ -408,10 +408,10 @@ class cls_template
         if (empty($tag))
         {
             return '{}';
-        }
-        
-
-        elseif ($tag{0} == '$') // 变量
+        }elseif ($tag{0} == '*' && substr($tag, -1) == '*') // 注释部分
+        {
+            return '';
+        }elseif ($tag{0} == '$') // 变量
         {
 //            if(strpos($tag,"'") || strpos($tag,"]"))
 //            {

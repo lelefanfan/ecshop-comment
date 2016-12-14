@@ -377,8 +377,8 @@ function assign_dynamic($tmp)
         " WHERE filename = '$tmp' AND type > 0 AND remarks ='' AND theme='" . $GLOBALS['_CFG']['template'] . "'";
         
     $res = $GLOBALS['db']->getAll($sql);
-
-   foreach ($res AS $row)
+    
+    foreach ($res AS $row)
     {
         switch ($row['type'])
         {

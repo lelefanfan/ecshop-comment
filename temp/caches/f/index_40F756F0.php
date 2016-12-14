@@ -1,4 +1,4 @@
-<?php exit;?>a:3:{s:8:"template";a:13:{i:0;s:57:"E:/Program Files/phpStudy/WWW/ec/themes/default/index.dwt";i:1;s:71:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/page_header.lbi";i:2;s:79:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/index_category_tree.lbi";i:3;s:72:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/index_banner.lbi";i:4;s:71:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/ad_position.lbi";i:5;s:69:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/index_lad.lbi";i:6;s:65:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/f1_ad.lbi";i:7;s:72:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/cat_articles.lbi";i:8;s:69:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/cat_goods.lbi";i:9;s:65:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/f2_ad.lbi";i:10;s:65:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/f3_ad.lbi";i:11;s:73:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/recommend_hot.lbi";i:12;s:71:"E:/Program Files/phpStudy/WWW/ec/themes/default/library/page_footer.lbi";}s:7:"expires";i:1481643467;s:8:"maketime";i:1481639867;}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php exit;?>a:3:{s:8:"template";a:12:{i:0;s:58:"E:/Program Files/phpStudy/WWW/ec3/themes/default/index.dwt";i:1;s:72:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/page_header.lbi";i:2;s:80:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/index_category_tree.lbi";i:3;s:73:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/index_banner.lbi";i:4;s:72:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/ad_position.lbi";i:5;s:70:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/index_lad.lbi";i:6;s:66:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/f1_ad.lbi";i:7;s:70:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/cat_goods.lbi";i:8;s:66:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/f2_ad.lbi";i:9;s:66:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/f3_ad.lbi";i:10;s:74:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/recommend_hot.lbi";i:11;s:72:"E:/Program Files/phpStudy/WWW/ec3/themes/default/library/page_footer.lbi";}s:7:"expires";i:1481731744;s:8:"maketime";i:1481728144;}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="Generator" content="ECSHOP v3.0.0" />
@@ -67,8 +67,7 @@ var process_request = "正在处理您的请求...";
     </div>
   </div>
 </div>
-<div class="clear0 "></div>
-<script>
+<div class="clear0 "></div><script>
 if (Object.prototype.toJSONString){
   var oldToJSONString = Object.toJSONString;
   Object.prototype.toJSONString = function(){
@@ -82,8 +81,7 @@ if (Object.prototype.toJSONString){
 </script>
 <div class="indexpage clearfix">
   <div class="index-cat">
-    
-<div class="category_info">
+    <div class="category_info">
   <div id="category_tree">
         <div class="cat-box">
       <div class="cat1"><a href="category.php?id=26">家用电器</a></div>
@@ -170,12 +168,9 @@ if (Object.prototype.toJSONString){
         <div class="clear0"></div>
   </div>
   <div class="clear0"></div>
-</div>
- 
- 
+</div> 
   </div>
-  <div class="index-banner"> 
- <style>
+  <div class="index-banner"><style>
     .swiper-container {
         width: 100%;
         height: 100%;
@@ -220,8 +215,7 @@ if (Object.prototype.toJSONString){
 45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:1:"4";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a
   </div>
   <div class="ad-lb">
-     
- <style>
+    <style>
     .swiper-container.swiper2 {
         width: 100%;
         height: auto;
@@ -280,18 +274,9 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">1F 家用电器</div>
       <div class="clearfix goods-wrap">
         <div class="goods-leftad">
-           
-45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:1:"9";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"10";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"11";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"12";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
+          45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:1:"9";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"10";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"11";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"12";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
         <div class="goods-right">
         
-<ul>
-  <li>
-  <a href="article.php?id=27" title="800万像素超强拍照机 LG Viewty Smart再曝光">800万像素超强拍照机 LG V...</a> <span>2009-05-18</span></li>
-  <li>
-  <a href="article.php?id=8" title="诺基亚牵手移动 5款热门TD手机机型推荐">诺基亚牵手移动 5款热门TD手机...</a> <span>2009-05-04</span></li>
-  <li>
-  <a href="article.php?id=7" title="三星电子宣布将在中国发布15款3G手机">三星电子宣布将在中国发布15款3...</a> <span>2009-05-04</span></li>
-  </ul>
 <div class="all_ms">
     <a class="goodsItem" href="goods.php?id=72"> <div  class="img-box"><img src="images/201605/thumb_img/72_thumb_G_1462956048008.jpg" alt="智能相机" class="goodsimg" /></div>
   <div class="goods-brief"></div>
@@ -364,8 +349,7 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">2F 数码时尚</div>
       <div class="clearfix goods-wrap">
         <div class="goods-leftad">
-           
-45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"13";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a<div style="margin-top:12px;">
+          45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"13";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a<div style="margin-top:12px;">
 	45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"14";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a</div>        </div>
         <div class="goods-right">
             
@@ -441,8 +425,7 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">3F 家居生活</div>
       <div class="clearfix goods-wrap">
         <div class="goods-leftad">
-           
-45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"15";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
+          45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"15";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
         <div class="goods-right">
             
 <div class="all_ms">
@@ -517,7 +500,6 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">热门商品推荐</div>
       <div class="clearfix goods-wrap hot-goods">
             
- 
 <div id="show_hot_area" class="clearfix goodsBox all_mid all_ms">
      <a class="goodsItem" href="goods.php?id=69"> <div  class="img-box"><img src="images/201605/thumb_img/69_thumb_G_1462955300971.jpg" alt="平衡车" class="goodsimg" /></div>
   <div class="goods-brief"></div>
@@ -619,12 +601,9 @@ if (Object.prototype.toJSONString){
   <div class="blank"></div>
   
 <div class="footer_info"> &copy; 2005-2016 ECSHOP 版权所有，并保留所有权利。       <br />
-      <a href="http://www.ecshop.com" target="_blank" style=" font-family:Verdana; font-size:11px;">Powered&nbsp;by&nbsp;<strong><span style="color: #3366FF">ECShop</span>&nbsp;<span style="color: #FF9966">v3.0.0</span></strong></a>&nbsp;<a href="http://www.ecshop.com/license.php?product=ecshop_b2c&url=http%3A%2F%2Fwww.ec.me%2F" target="_blank"
+      <a href="http://www.ecshop.com" target="_blank" style=" font-family:Verdana; font-size:11px;">Powered&nbsp;by&nbsp;<strong><span style="color: #3366FF">ECShop</span>&nbsp;<span style="color: #FF9966">v3.0.0</span></strong></a>&nbsp;<a href="http://www.ecshop.com/license.php?product=ecshop_b2c&url=http%3A%2F%2Fwww.ec3.me%2F" target="_blank"
 >&nbsp;&nbsp;Licensed</a><br />
           </div>
   <div class="clear10"></div>
-</div>
- 
- 
-</body>
+</div></body>
 </html>
