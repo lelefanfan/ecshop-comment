@@ -79,6 +79,7 @@ if ($_REQUEST['act'] == 'list' || $_REQUEST['act'] == 'trash')
     $goods_list = goods_list($_REQUEST['act'] == 'list' ? 0 : 1, ($_REQUEST['act'] == 'list') ? (($code == '') ? 1 : 0) : -1);
     $smarty->assign('goods_list',   $goods_list['goods']);
     $smarty->assign('filter',       $goods_list['filter']);
+    // p($goods_list['filter']);
     $smarty->assign('record_count', $goods_list['record_count']);
     $smarty->assign('page_count',   $goods_list['page_count']);
     $smarty->assign('full_page',    1);

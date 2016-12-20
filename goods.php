@@ -21,7 +21,6 @@ if ((DEBUG_MODE & 2) != 2)
 {
     $smarty->caching = true;
 }
-
 $affiliate = unserialize($GLOBALS['_CFG']['affiliate']);
 $smarty->assign('affiliate', $affiliate);
 
@@ -167,9 +166,9 @@ if (!$smarty->is_cached('goods.dwt', $cache_id))
         }
 
         $shop_price   = $goods['shop_price'];
-        $linked_goods = get_linked_goods($goods_id);
+        $linked_goods = get_linked_goods($goods_id); // 获取指定商品的关联商品
 
-        $goods['goods_style_name'] = add_style($goods['goods_name'], $goods['goods_name_style']);
+        $goods['goods_style_name'] = add_style($goods['goods_name'], $goods['goods_name_style']); // 添加商品名样式
 
         /* 购买该商品可以得到多少钱的红包 */
         if ($goods['bonus_type_id'] > 0)

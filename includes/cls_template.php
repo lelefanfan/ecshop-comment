@@ -511,8 +511,7 @@ class cls_template
                     break;
 
                 case 'insert_scripts':
-                    $t = $this->get_para(substr($tag, 15), 0);
-
+                    $t = $this->get_para(substr($tag, 15), 0); // 解析出需要载入的js文件名，以数组形式返回
                     return '<?php echo $this->smarty_insert_scripts(' . $this->make_array($t) . '); ?>';
                     break;
 
@@ -546,7 +545,6 @@ class cls_template
 
                 case 'html_options':
                     $t = $this->get_para(substr($tag, 13), 0);
-
                     return '<?php echo $this->html_options(' . $this->make_array($t) . '); ?>';
                     break;
 
@@ -619,7 +617,7 @@ class cls_template
         {
             $p = $this->make_var($val);
         }
-
+        // 如果模板标签中使用了函数，例如：{$data.name|truncate|default}
         if (!empty($moddb))
         {
             foreach ($moddb AS $key => $mod)
@@ -660,6 +658,7 @@ class cls_template
                         {
                             $p = 'htmlspecialchars(' . $p . ')';
                         }
+
                         break;
 
                     case 'nl2br':
@@ -685,7 +684,6 @@ class cls_template
                 }
             }
         }
-
         return $p;
     }
 
@@ -1253,11 +1251,11 @@ class cls_template
 
     function html_options($arr)
     {
-        $selected = $arr['selected'];
+        $selected = $arr['selected']; // 当前选择项
 
         if ($arr['options'])
         {
-            $options = (array)$arr['options'];
+            $options = (array)$arr['options']; // 所有选项
         }
         elseif ($arr['output'])
         {
@@ -1286,8 +1284,8 @@ class cls_template
 
     function html_select_date($arr)
     {
-        $pre = $arr['prefix'];
-        if (isset($arr['time']))
+        $pre = $arr['prefix']; // select标签前缀
+        if (isset($arr['time'])) // 日期值显示的格式 (sprintf) , 例如：0000-00-00
         {
             if (intval($arr['time']) > 10000)
             {
@@ -1298,7 +1296,8 @@ class cls_template
             $month = strval($t[1]);
             $day   = strval($t[2]);
         }
-        $now = gmdate('Y', $this->_nowtime);
+        $now = gmdate('Y', $this->_nowtime); //当前年
+        // 开始时间
         if (isset($arr['start_year']))
         {
             if (abs($arr['start_year']) == $arr['start_year'])
@@ -1307,7 +1306,7 @@ class cls_template
             }
             else
             {
-                $startyear = $arr['start_year'] + $now;
+                $startyear = $arr['start_year'] + $now;                
             }
         }
         else
@@ -1315,6 +1314,7 @@ class cls_template
             $startyear = $now - 3;
         }
 
+        // 结束时间
         if (isset($arr['end_year']))
         {
             if (strlen(abs($arr['end_year'])) == strlen($arr['end_year']))
@@ -1331,12 +1331,13 @@ class cls_template
             $endyear = $now + 3;
         }
 
-        $out = "<select name=\"{$pre}Year\">";
+        $out = "<select name=\"{$pre}Year\">"; // 年
         for ($i = $startyear; $i <= $endyear; $i++)
         {
             $out .= $i == $year ? "<option value=\"$i\" selected>$i</option>" : "<option value=\"$i\">$i</option>";
         }
-        if ($arr['display_months'] != 'false')
+
+        if ($arr['display_months'] != 'false') // 月
         {
             $out .= "</select>&nbsp;<select name=\"{$pre}Month\">";
             for ($i = 1; $i <= 12; $i++)
@@ -1374,8 +1375,10 @@ class cls_template
 
     function html_select_time($arr)
     {
-        $pre = $arr['prefix'];
-        if (isset($arr['time']))
+
+        $pre = $arr['prefix']; // 前缀
+        
+        if (isset($arr['time'])) // 存在时间
         {
             $arr['time'] = gmdate('H-i-s', $arr['time'] + 8*3600);
             $t     = explode('-', $arr['time']);
@@ -1417,6 +1420,7 @@ class cls_template
 
         return $out;
     }
+
     function cycle($arr)
     {
         static $k, $old;

@@ -45,28 +45,40 @@ else
 
 
 /* 初始化分页信息 */
+// 页码
 $page = isset($_REQUEST['page'])   && intval($_REQUEST['page'])  > 0 ? intval($_REQUEST['page'])  : 1;
+// 每页条数
 $size = isset($_CFG['page_size'])  && intval($_CFG['page_size']) > 0 ? intval($_CFG['page_size']) : 10;
+// 品牌id
 $brand = isset($_REQUEST['brand']) && intval($_REQUEST['brand']) > 0 ? intval($_REQUEST['brand']) : 0;
+// 最高价格
 $price_max = isset($_REQUEST['price_max']) && intval($_REQUEST['price_max']) > 0 ? intval($_REQUEST['price_max']) : 0;
+// 最低价格
 $price_min = isset($_REQUEST['price_min']) && intval($_REQUEST['price_min']) > 0 ? intval($_REQUEST['price_min']) : 0;
+// 过滤属性
 $filter_attr_str = isset($_REQUEST['filter_attr']) ? htmlspecialchars(trim($_REQUEST['filter_attr'])) : '0';
 
 $filter_attr_str = trim(urldecode($filter_attr_str));
-$filter_attr_str = preg_match('/^[\d\.]+$/',$filter_attr_str) ? $filter_attr_str : '';
-$filter_attr = empty($filter_attr_str) ? '' : explode('.', $filter_attr_str);
+$filter_attr_str = preg_match('/^[\d\.]+$/',$filter_attr_str) ? $filter_attr_str : ''; // 匹配过滤属性格式
+$filter_attr = empty($filter_attr_str) ? '' : explode('.', $filter_attr_str); // 将过滤属性转换为数组
 
 
 /* 排序、显示方式以及类型 */
+// 从配置中获取 排序、显示方式以及类型
 $default_display_type = $_CFG['show_order_type'] == '0' ? 'list' : ($_CFG['show_order_type'] == '1' ? 'grid' : 'text');
 $default_sort_order_method = $_CFG['sort_order_method'] == '0' ? 'DESC' : 'ASC';
 $default_sort_order_type   = $_CFG['sort_order_type'] == '0' ? 'goods_id' : ($_CFG['sort_order_type'] == '1' ? 'shop_price' : 'last_update');
 
+// 从请求信息中替换 排序、显示方式以及类型
 $sort  = (isset($_REQUEST['sort'])  && in_array(trim(strtolower($_REQUEST['sort'])), array('goods_id', 'shop_price', 'last_update'))) ? trim($_REQUEST['sort'])  : $default_sort_order_type;
+
 $order = (isset($_REQUEST['order']) && in_array(trim(strtoupper($_REQUEST['order'])), array('ASC', 'DESC')))                              ? trim($_REQUEST['order']) : $default_sort_order_method;
+
 $display  = (isset($_REQUEST['display']) && in_array(trim(strtolower($_REQUEST['display'])), array('list', 'grid', 'text'))) ? trim($_REQUEST['display'])  : (isset($_COOKIE['ECS']['display']) ? $_COOKIE['ECS']['display'] : $default_display_type);
+
 $display  = in_array($display, array('list', 'grid', 'text')) ? $display : 'text';
-setcookie('ECS[display]', $display, gmtime() + 86400 * 7);
+// 将显示方式存储到cookie一周
+setcookie('ECS[display]', $display, gmtime() + 86400 * 7); 
 /*------------------------------------------------------ */
 //-- PROCESSOR
 /*------------------------------------------------------ */
@@ -85,9 +97,9 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
 
     if (!empty($cat))
     {
-        $smarty->assign('keywords',    htmlspecialchars($cat['keywords']));
-        $smarty->assign('description', htmlspecialchars($cat['cat_desc']));
-        $smarty->assign('cat_style',   htmlspecialchars($cat['style']));
+        $smarty->assign('keywords',    htmlspecialchars($cat['keywords'])); // 关键词
+        $smarty->assign('description', htmlspecialchars($cat['cat_desc'])); // 描述
+        $smarty->assign('cat_style',   htmlspecialchars($cat['style'])); // 栏目样式
     }
     else
     {
@@ -101,7 +113,7 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
     if ($brand > 0)
     {
         $sql = "SELECT brand_name FROM " .$GLOBALS['ecs']->table('brand'). " WHERE brand_id = '$brand'";
-        $brand_name = $db->getOne($sql);
+        $brand_name = $db->getOne($sql); // 获取品牌名称
     }
     else
     {
@@ -208,7 +220,7 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
         $price_grade[0]['price_range'] = $_LANG['all_attribute'];
         $price_grade[0]['url'] = build_uri('category', array('cid'=>$cat_id, 'bid'=>$brand, 'price_min'=>0, 'price_max'=> 0, 'filter_attr'=>$filter_attr_str), $cat['cat_name']);
         $price_grade[0]['selected'] = empty($price_max) ? 1 : 0;
-
+        // p($price_grade);
         $smarty->assign('price_grade',     $price_grade);
 
     }
@@ -245,22 +257,24 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
     $brands[0]['brand_name'] = $_LANG['all_attribute'];
     $brands[0]['url'] = build_uri('category', array('cid' => $cat_id, 'bid' => 0, 'price_min'=>$price_min, 'price_max'=> $price_max, 'filter_attr'=>$filter_attr_str), $cat['cat_name']);
     $brands[0]['selected'] = empty($brand) ? 1 : 0;
-
-    $smarty->assign('brands', $brands);
+    $smarty->assign('brands', $brands); // 分派品牌列表到模版
 
 
     /* 属性筛选 */
     $ext = ''; //商品查询条件扩展
-    if ($cat['filter_attr'] > 0)
+    if ($cat['filter_attr'] > 0) // 当前栏目 category表存在filter_attr字段值
     {
         $cat_filter_attr = explode(',', $cat['filter_attr']);       //提取出此分类的筛选属性
         $all_attr_list = array();
 
+        // 循环当前栏目 category表 filter_attr字段 属性
         foreach ($cat_filter_attr AS $key => $value)
         {
             $sql = "SELECT a.attr_name FROM " . $ecs->table('attribute') . " AS a, " . $ecs->table('goods_attr') . " AS ga, " . $ecs->table('goods') . " AS g WHERE ($children OR " . get_extension_goods($children) . ") AND a.attr_id = ga.attr_id AND g.goods_id = ga.goods_id AND g.is_delete = 0 AND g.is_on_sale = 1 AND g.is_alone_sale = 1 AND a.attr_id='$value'";
-            if($temp_name = $db->getOne($sql))
+
+            if($temp_name = $db->getOne($sql)) // 查找属性名称
             {
+
                 $all_attr_list[$key]['filter_attr_name'] = $temp_name;
 
                 $sql = "SELECT a.attr_id, MIN(a.goods_attr_id ) AS goods_id, a.attr_value AS attr_value FROM " . $ecs->table('goods_attr') . " AS a, " . $ecs->table('goods') .
@@ -268,7 +282,7 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
                        " WHERE ($children OR " . get_extension_goods($children) . ') AND g.goods_id = a.goods_id AND g.is_delete = 0 AND g.is_on_sale = 1 AND g.is_alone_sale = 1 '.
                        " AND a.attr_id='$value' ".
                        " GROUP BY a.attr_value";
-
+                // 查找属性名称下所有的值
                 $attr_list = $db->getAll($sql);
 
                 $temp_arrt_url_arr = array();
@@ -305,8 +319,9 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
             }
 
         }
-
+        // p($all_attr_list);
         $smarty->assign('filter_attr_list',  $all_attr_list);
+
         /* 扩展商品查询条件 */
         if (!empty($filter_attr))
         {
@@ -375,12 +390,15 @@ if (!$smarty->is_cached('category.dwt', $cache_id))
     $smarty->assign('promotion_goods', get_category_recommend_goods('promote', $children, $brand, $price_min, $price_max, $ext));
     $smarty->assign('hot_goods',       get_category_recommend_goods('hot', $children, $brand, $price_min, $price_max, $ext));
 
+    // 获取分类下商品总数
     $count = get_cagtegory_goods_count($children, $brand, $price_min, $price_max, $ext);
+    // 最大页码
     $max_page = ($count> 0) ? ceil($count / $size) : 1;
     if ($page > $max_page)
     {
         $page = $max_page;
     }
+    // 获得分类下的商品
     $goodslist = category_get_goods($children, $brand, $price_min, $price_max, $ext, $size, $page, $sort, $order);
     if($display == 'grid')
     {

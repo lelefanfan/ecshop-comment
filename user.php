@@ -477,7 +477,7 @@ elseif ($action == 'profile')
 
     /* 密码提示问题 */
     $smarty->assign('passwd_questions', $_LANG['passwd_questions']);
-
+    // p($user_info);
     $smarty->assign('profile', $user_info);
     $smarty->display('user_transaction.dwt');
 }
@@ -486,7 +486,6 @@ elseif ($action == 'profile')
 elseif ($action == 'act_edit_profile')
 {
     include_once(ROOT_PATH . 'includes/lib_transaction.php');
-
     $birthday = trim($_POST['birthdayYear']) .'-'. trim($_POST['birthdayMonth']) .'-'.
     trim($_POST['birthdayDay']);
     $email = trim($_POST['email']);
@@ -561,7 +560,6 @@ elseif ($action == 'act_edit_profile')
         'birthday' => $birthday,
         'other'    => isset($other) ? $other : array()
         );
-
 
     if (edit_profile($profile))
     {

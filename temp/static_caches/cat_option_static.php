@@ -32,38 +32,6 @@ $data = array (
     'id' => '27',
     'name' => '大家电',
   ),
-  29 => 
-  array (
-    'cat_id' => '29',
-    'cat_name' => '家用空调',
-    'measure_unit' => '',
-    'parent_id' => '27',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '0',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => 0,
-    'level' => 2,
-    'id' => '29',
-    'name' => '家用空调',
-  ),
-  30 => 
-  array (
-    'cat_id' => '30',
-    'cat_name' => '家电配件',
-    'measure_unit' => '',
-    'parent_id' => '27',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '0',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => 0,
-    'level' => 2,
-    'id' => '30',
-    'name' => '家电配件',
-  ),
   31 => 
   array (
     'cat_id' => '31',
@@ -111,6 +79,38 @@ $data = array (
     'level' => 2,
     'id' => '32',
     'name' => '冰箱',
+  ),
+  29 => 
+  array (
+    'cat_id' => '29',
+    'cat_name' => '家用空调',
+    'measure_unit' => '',
+    'parent_id' => '27',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => 0,
+    'level' => 2,
+    'id' => '29',
+    'name' => '家用空调',
+  ),
+  30 => 
+  array (
+    'cat_id' => '30',
+    'cat_name' => '家电配件',
+    'measure_unit' => '',
+    'parent_id' => '27',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => 0,
+    'level' => 2,
+    'id' => '30',
+    'name' => '家电配件',
   ),
   25 => 
   array (
@@ -160,22 +160,6 @@ $data = array (
     'id' => '22',
     'name' => '移动电源',
   ),
-  12 => 
-  array (
-    'cat_id' => '12',
-    'cat_name' => '充值卡',
-    'measure_unit' => '',
-    'parent_id' => '0',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '0',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => 0,
-    'level' => 0,
-    'id' => '12',
-    'name' => '充值卡',
-  ),
   1 => 
   array (
     'cat_id' => '1',
@@ -191,22 +175,6 @@ $data = array (
     'level' => 0,
     'id' => '1',
     'name' => '手机类型',
-  ),
-  3 => 
-  array (
-    'cat_id' => '3',
-    'cat_name' => '小型手机',
-    'measure_unit' => '臺',
-    'parent_id' => '1',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '4',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => '3',
-    'level' => 1,
-    'id' => '3',
-    'name' => '小型手机',
   ),
   4 => 
   array (
@@ -224,6 +192,22 @@ $data = array (
     'id' => '4',
     'name' => '3G手机',
   ),
+  3 => 
+  array (
+    'cat_id' => '3',
+    'cat_name' => '小型手机',
+    'measure_unit' => '臺',
+    'parent_id' => '1',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '4',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => '3',
+    'level' => 1,
+    'id' => '3',
+    'name' => '小型手机',
+  ),
   6 => 
   array (
     'cat_id' => '6',
@@ -240,22 +224,6 @@ $data = array (
     'id' => '6',
     'name' => '手机',
   ),
-  8 => 
-  array (
-    'cat_id' => '8',
-    'cat_name' => '耳机',
-    'measure_unit' => '',
-    'parent_id' => '6',
-    'is_show' => '1',
-    'show_in_nav' => '0',
-    'grade' => '0',
-    'sort_order' => '50',
-    'has_children' => '0',
-    'goods_num' => '3',
-    'level' => 1,
-    'id' => '8',
-    'name' => '耳机',
-  ),
   9 => 
   array (
     'cat_id' => '9',
@@ -271,6 +239,22 @@ $data = array (
     'level' => 1,
     'id' => '9',
     'name' => '电池',
+  ),
+  8 => 
+  array (
+    'cat_id' => '8',
+    'cat_name' => '耳机',
+    'measure_unit' => '',
+    'parent_id' => '6',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => '3',
+    'level' => 1,
+    'id' => '8',
+    'name' => '耳机',
   ),
   19 => 
   array (
@@ -335,6 +319,22 @@ $data = array (
     'level' => 0,
     'id' => '16',
     'name' => '服装',
+  ),
+  12 => 
+  array (
+    'cat_id' => '12',
+    'cat_name' => '充值卡',
+    'measure_unit' => '',
+    'parent_id' => '0',
+    'is_show' => '1',
+    'show_in_nav' => '0',
+    'grade' => '0',
+    'sort_order' => '50',
+    'has_children' => '0',
+    'goods_num' => 0,
+    'level' => 0,
+    'id' => '12',
+    'name' => '充值卡',
   ),
 );
 ?>
