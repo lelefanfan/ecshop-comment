@@ -242,7 +242,7 @@ class cls_template
 
         if ($this->_expires) //存在缓存文件到期时间
         {
-            // 缓存时间-最大缓存时间          
+            // 缓存文件创建时间-最大缓存时间=?编译文件最后修改时间
             $expires = $this->_expires - $this->cache_lifetime;
         }
         else
@@ -251,16 +251,14 @@ class cls_template
             $expires  = $filestat['mtime']; // 编译文件最后修改时间
         }
 
-
-
         $filestat = @stat($filename); // 模板文件信息
 
-        // 模板文件最后修改时间早于缓存时间 并且 不允许强制编译
+        // 模板文件最后修改时间小于编译文件最后修改时间 并且 不允许强制编译
         if ($filestat['mtime'] <= $expires && !$this->force_compile)
         {
             if (file_exists($name)) // 存在编译文件
             {
-                $source = $this->_require($name); // 返回编译文件
+                $source = $this->_require($name); // 获得编译文件源码
                 if ($source == '')
                 {
                     $expires = 0;
@@ -273,18 +271,19 @@ class cls_template
             }
         }
 
-        // 直接编译 或者 模板最后修改时间大于缓存时间 那么就进行编译
+        // 直接编译 或者 模板最后修改时间大于编译文件最后修改时间
         if ($this->force_compile || $filestat['mtime'] > $expires)
         {
-            $this->_current_file = $filename; // 设置当前模板文件 
+            $this->_current_file = $filename; // 设置当前模板文件名
 
             $source = $this->fetch_str(file_get_contents($filename)); // 对模板文件进行编译
 
             if (file_put_contents($name, $source, LOCK_EX) === false)
             {
+                // 产生一个错误信息
                 trigger_error('can\'t write:' . $name);
             }
-
+            // 执行编译后源码文件中的php代码，并返回相应转移后的代码
             $source = $this->_eval($source);
         }
 
@@ -1151,10 +1150,12 @@ class cls_template
                         // 
                         /* 修改$reg_content中的内容 */
                         $GLOBALS['libs'] = $libs;
+                        // p($libs);
                         $reg_content = preg_replace_callback($lib_pattern, 'dyna_libs_replace', $reg_content);
-
+                        // echo $reg_content;die;
                         /* 用修改过的内容替换原来当前区域中内容 */
                         $source = preg_replace($pattern, $reg_content, $source);
+                        file_put_contents('c.html', $source);die('ok');
                     }
                 }
             }
