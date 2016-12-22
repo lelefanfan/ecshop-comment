@@ -108,15 +108,17 @@ class cls_template
         error_reporting(E_ALL ^ E_NOTICE); // 设置错误级别
 
         $this->_checkfile = false;
-        $out = $this->fetch($filename, $cache_id);
+        // echo $this->_echash;die;
+        $out = $this->fetch($filename, $cache_id); // 模板文件编译后静态文档代码
 
-        if (strpos($out, $this->_echash) !== false)
+        if (strpos($out, $this->_echash) !== false) // 处理动态内容
         {
             $k = explode($this->_echash, $out);
             foreach ($k AS $key => $val)
             {
                 if (($key % 2) == 1)
                 {
+                    // 处理动态内容
                     $k[$key] = $this->insert_mod($val);
                 }
             }
@@ -183,7 +185,6 @@ class cls_template
                 }
                 else
                 {
-
                     if (!in_array($filename, $this->template))
                     {
                         $this->template[] = $filename;
@@ -194,7 +195,7 @@ class cls_template
 
                     if ($cache_id)
                     {
-                        $cachename = basename($filename, strrchr($filename, '.')) . '_' . $cache_id;
+                        $cachename = basename($filename, strrchr($filename, '.')) . '_' . $cache_id; //获取缓存文件名
                         $data = serialize(array('template' => $this->template, 'expires' => $this->_nowtime + $this->cache_lifetime, 'maketime' => $this->_nowtime));
                         $out = str_replace("\r", '', $out);
 
@@ -240,7 +241,7 @@ class cls_template
         $name = $this->compile_dir . '/' . basename($filename) . '.php'; // 编译文件名
 
         if ($this->_expires) //存在缓存文件到期时间
-        {  
+        {
             // 缓存时间-最大缓存时间          
             $expires = $this->_expires - $this->cache_lifetime;
         }
@@ -294,7 +295,7 @@ class cls_template
      * 处理字符串函数
      *
      * @access  public
-     * @param   string     $source
+     * @param   string     $source     文件名
      *
      * @return  sring
      */
@@ -361,9 +362,11 @@ class cls_template
 
                     return false;
                 }
-                $this->_expires = $para['expires']; // 获取缓存文件过期时间
+                // 获取缓存文件过期时间
+                $this->_expires = $para['expires']; 
 
-                $this->template_out = substr($data, $pos); // 获取缓存文件文档内容
+                // 获取缓存文件文档内容
+                $this->template_out = substr($data, $pos); 
 
                 foreach ($para['template'] AS $val)
                 {
@@ -1207,10 +1210,10 @@ class cls_template
 
     function insert_mod($name) // 处理动态内容
     {
+        
         list($fun, $para) = explode('|', $name);
         $para = unserialize($para);
         $fun = 'insert_' . $fun;
-
         return $fun($para);
     }
 

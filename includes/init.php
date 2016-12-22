@@ -190,11 +190,14 @@ if (!defined('INIT_NO_SMARTY'))
     /* 创建 Smarty 对象。*/
     require(ROOT_PATH . 'includes/cls_template.php');
     $smarty = new cls_template;
-
+    // 缓存时间
     $smarty->cache_lifetime = $_CFG['cache_time'];
+    // 模板目录
     $smarty->template_dir   = ROOT_PATH . 'themes/' . $_CFG['template'];
-    $smarty->cache_dir      = ROOT_PATH . 'temp/caches'; // 缓存目录
-    $smarty->compile_dir    = ROOT_PATH . 'temp/compiled'; // 编译目录
+    // 缓存目录
+    $smarty->cache_dir      = ROOT_PATH . 'temp/caches'; 
+    // 编译目录    
+    $smarty->compile_dir    = ROOT_PATH . 'temp/compiled'; 
 
     if ((DEBUG_MODE & 2) == 2)
     {
