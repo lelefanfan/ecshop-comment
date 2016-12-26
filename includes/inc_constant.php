@@ -274,7 +274,9 @@ define('DEBUG_API' , true);
 define('LOG_DIR', ROOT_PATH."logs/".date("Y-m",time()));
 /* debug end*/
 
+// 桌面轮播广告
 define('PMP_DESKTOP', 'http://pmp.shopex.cn/index.php?app=ad&ctl=display&act=index&nobar=1&nobtn=1&code=babda8d9d1c2863bd2b6091fce411881&entid=131110483129&username=&r=1461304885');
+// 营销推广轮播广告（后台首页）
 define('PMS_MARKET', 'http://pmp.shopex.cn/index.php?app=ad&ctl=display&act=index&nobar=1&nobtn=1&code=01564ca0eb12162bcb6801ac67c97f07&entid=131110483129&username=&r=1461304885');
 
 

@@ -3,7 +3,7 @@
 /**
  * ECSHOP 前台公用文件
  * ============================================================================
- * * 版权所有 2005-2012 上海商派网络科技有限公司，并保留所有权利。
+ * 版权所有 2005-2012 上海商派网络科技有限公司，并保留所有权利。
  * 网站地址: http://www.ecshop.com；
  * ----------------------------------------------------------------------------
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和
@@ -14,6 +14,7 @@
 */
 require_once(dirname(__FILE__) . '/debug.php'); // 载入调试文件
 require_once(dirname(__FILE__) . '/safety.php'); // 载入安全性文件
+
 if (!defined('IN_ECS'))
 {
     die('Hacking attempt'); // 黑客攻击
@@ -66,7 +67,7 @@ require(ROOT_PATH . 'data/config.php');
 // 设置调试模式
 if (defined('DEBUG_MODE') == false)
 {
-    define('DEBUG_MODE', 0);
+    define('DEBUG_MODE', 0); // 默认调试模式
 }
 
 // 设置时区
@@ -113,9 +114,10 @@ if (!get_magic_quotes_gpc())
 
 /* 创建 ECSHOP 对象 */
 $ecs = new ECS($db_name, $prefix); // 实例化基础类
-define('DATA_DIR', $ecs->data_dir()); // 获取数据目录路径
-define('IMAGE_DIR', $ecs->image_dir()); // 获取图片目录路径
+define('DATA_DIR', $ecs->data_dir()); // 获取数据目录路径 默认：data
+define('IMAGE_DIR', $ecs->image_dir()); // 获取图片目录路径 默认：images
 
+// echo $ecs->data_dir(),$ecs->image_dir();die;
 
 /* 初始化数据库类 */
 require(ROOT_PATH . 'includes/cls_mysql.php');
@@ -155,7 +157,7 @@ if (is_spider())
         /* 整合UC后，如果是蜘蛛访问，初始化UC需要的常量 */
         if($_CFG['integrate_code'] == 'ucenter')
         {
-             $user = init_users();
+             $user = init_users(); // 初始化会员数据整合类
         }
     }
     $_SESSION = array();

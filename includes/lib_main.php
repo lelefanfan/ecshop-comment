@@ -1362,7 +1362,7 @@ function dyna_libs_replace($matches)
 {
 
     $key = '/' . $matches[1]; //例如匹配到一个库文件：'/library/cat_goods.lbi'
-    p($GLOBALS['libs'][$key]);
+    // p($GLOBALS['libs'][$key]);
     if ($row = array_shift($GLOBALS['libs'][$key]))
     {
         $str = '';
@@ -1392,6 +1392,7 @@ function dyna_libs_replace($matches)
         return $matches[0];
     }
 }
+
 
 /**
  * 处理上传文件，并返回上传图片名(上传失败时返回图片名为空）

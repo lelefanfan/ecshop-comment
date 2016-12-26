@@ -1155,7 +1155,7 @@ class cls_template
                         // echo $reg_content;die;
                         /* 用修改过的内容替换原来当前区域中内容 */
                         $source = preg_replace($pattern, $reg_content, $source);
-                        file_put_contents('c.html', $source);die('ok');
+                        // file_put_contents('c.html', $source);die('ok');
                     }
                 }
             }

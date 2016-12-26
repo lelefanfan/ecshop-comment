@@ -179,7 +179,7 @@ class cls_session
         if (empty($session))
         {
             // 初始化session信息
-            $this->insert_session();
+            $this->insert_session(); //将该sessionid的session信息置为空
             $this->session_expiry = 0;
             $this->session_md5    = '40cd750bba9870f18aada2478b24840a';
             $GLOBALS['_SESSION']  = array();
@@ -258,7 +258,7 @@ class cls_session
         }
 
         $data = addslashes($data);
-
+        // echo $data{255};die('ok');
         if (isset($data{255}))
         {
             $this->db->autoReplace($this->session_data_table, array('sesskey' => $this->session_id, 'expiry' => $this->_time, 'data' => $data), array('expiry' => $this->_time,'data' => $data));

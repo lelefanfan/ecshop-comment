@@ -38,8 +38,8 @@ class cls_mysql
     var $version        = ''; // MySQL版本
     var $dbhash         = ''; // 哈希值
     var $starttime      = 0; // 开始时间
-    var $timeline       = 0;
-    var $timezone       = 0;
+    var $timeline       = 0; // 返回自1970-1-1 8:00:00开始到当前系统时间为止的秒数。
+    var $timezone       = 0; // 返回1970-1-1 8:00:00开始到date所代表的时间为止的秒数。（生成缓存的时候带了date参数）
 
     var $mysql_config_cache_file_time = 0;
 
@@ -108,7 +108,7 @@ class cls_mysql
         if ($pconnect)
         {   /* 持久连接 */
 
-            if (!($this->link_id = @mysql_pconnect($dbhost, $dbuser, $dbpw)))
+            if (!($this->link_id = @mysql_pconnect($dbhost, $dbuser, $dbpw))) // 连接失败
             {
                 // 非静默模式显示错误
                 if (!$quiet)
@@ -194,6 +194,7 @@ class cls_mysql
                 ($dbhost != '.' && strtolower($dbhost) != 'localhost:3306' && $dbhost != '127.0.0.1:3306') ||
                 (PHP_VERSION >= '5.1' && date_default_timezone_get() == 'UTC'))
             {
+
                 $result = mysql_query("SELECT UNIX_TIMESTAMP() AS timeline, UNIX_TIMESTAMP('" . date('Y-m-d H:i:s', $this->starttime) . "') AS timezone", $this->link_id);
                 $row    = mysql_fetch_assoc($result);
 
@@ -207,7 +208,6 @@ class cls_mysql
                     $this->timezone = $this->starttime - $row['timezone'];
                 }
             }
-
             $content = '<' . "?php\r\n" .
                        '$this->mysql_config_cache_file_time = ' . $this->starttime . ";\r\n" .
                        '$this->timeline = ' . $this->timeline . ";\r\n" .
