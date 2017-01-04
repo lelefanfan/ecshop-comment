@@ -96,6 +96,7 @@ require(ROOT_PATH . 'includes/lib_insert.php'); // 动态内容函数库
 require(ROOT_PATH . 'includes/lib_goods.php'); // 商品相关函数库
 require(ROOT_PATH . 'includes/lib_article.php'); // 文章及文章分类相关函数库
 
+
 /* 对用户传入的变量进行转义操作。*/
 if (!get_magic_quotes_gpc())
 {
@@ -137,6 +138,7 @@ $_CFG = load_config();
 
 /* 载入前台语言文件 */
 require(ROOT_PATH . 'languages/' . $_CFG['lang'] . '/common.php');
+
 
 // 商店关闭设置
 if ($_CFG['shop_closed'] == 1)
@@ -201,7 +203,7 @@ if (!defined('INIT_NO_SMARTY'))
     // 编译目录    
     $smarty->compile_dir    = ROOT_PATH . 'temp/compiled'; 
 
-    if ((DEBUG_MODE & 2) == 2)
+    if ((DEBUG_MODE & 2) == 2) // 当 DEBUG_MODE 为2
     {
         $smarty->direct_output = true;
         $smarty->force_compile = true;

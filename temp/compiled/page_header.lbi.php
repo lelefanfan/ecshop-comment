@@ -26,6 +26,7 @@ echo $this->_echash . $k['name'] . '|' . serialize($k) . $this->_echash;
     </div>
   </div>
 </div>
+
 <div class="nav-menu">
   <div class="wrap">
     <div class="logo"><a href="index.php" name="top"><img src="themes/default/images/logo.jpg" /></a></div>

@@ -1662,9 +1662,10 @@ function assign_template($ctype = '', $catlist = array())
     $smarty->assign('ecs_version',   VERSION); // EC版本
     $smarty->assign('icp_number',    $GLOBALS['_CFG']['icp_number']); // ICP证书号
     $smarty->assign('username',      !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : ''); // 会员名称
-    $smarty->assign('category_list', cat_list(0, 0, true,  2, false)); // 获得指定分类下的子分类的数组
-    $smarty->assign('catalog_list',  cat_list(0, 0, false, 1, false)); // 获得指定分类下的子分类的数组
+    $smarty->assign('category_list', cat_list(0, 0, true,  2, false)); // 返回2级栏目 'option' html源代码
+    $smarty->assign('catalog_list',  cat_list(0, 0, false, 1, false)); // 返回1级栏目，数组
     $smarty->assign('navigator_list',        get_navigator($ctype, $catlist));  //自定义导航栏
+
     // 前台搜索关键字
     if (!empty($GLOBALS['_CFG']['search_keywords']))
     {
