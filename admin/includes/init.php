@@ -17,11 +17,13 @@ require_once('../includes/debug.php'); // 载入调试文件
 
 if (!defined('IN_ECS'))
 {
-    die('Hacking attempt');
+    die('Hacking attempt'); // 黑客攻击
 }
 
+// 后台认证
 define('ECS_ADMIN', true);
 
+// 设置错误级别
 error_reporting(E_ALL);
 
 if (__FILE__ == '')
@@ -30,12 +32,12 @@ if (__FILE__ == '')
 }
 
 /* 初始化设置 */
-@ini_set('memory_limit',          '64M');
-@ini_set('session.cache_expire',  180);
-@ini_set('session.use_trans_sid', 0);
-@ini_set('session.use_cookies',   1);
-@ini_set('session.auto_start',    0);
-@ini_set('display_errors',        1);
+@ini_set('memory_limit',          '64M'); // 内存设置
+@ini_set('session.cache_expire',  180); // 指定会话页面在客户端cache中的有效期限(分钟)
+@ini_set('session.use_trans_sid', 0); // 是否使用明码在URL中显示SID(会话ID)
+@ini_set('session.use_cookies',   1); // 是否使用cookie在客户端保存会话ID
+@ini_set('session.auto_start',    0); // 在客户访问任何页面时都自动初始化会话，默认禁止
+@ini_set('display_errors',        1); // 是否将错误信息作为输出的一部分显示
 
 if (DIRECTORY_SEPARATOR == '\\')
 {
@@ -46,6 +48,7 @@ else
     @ini_set('include_path',      '.:' . ROOT_PATH);
 }
 
+// 载入数据库信息
 if (file_exists('../data/config.php'))
 {
     include('../data/config.php');
@@ -58,20 +61,21 @@ else
 /* 取得当前ecshop所在的根目录 */
 if(!defined('ADMIN_PATH'))
 {
-    define('ADMIN_PATH','admin');
+    define('ADMIN_PATH','admin'); // 设置后台目录常量
 }
 define('ROOT_PATH', str_replace(ADMIN_PATH . '/includes/init.php', '', str_replace('\\', '/', __FILE__)));
-
+// 设置默认调试模式
 if (defined('DEBUG_MODE') == false)
 {
     define('DEBUG_MODE', 0);
 }
 
+// 设置时区
 if (PHP_VERSION >= '5.1' && !empty($timezone))
 {
     date_default_timezone_set($timezone);
 }
-
+// 设置当前脚本名称，例如：/admin/index.php 
 if (isset($_SERVER['PHP_SELF']))
 {
     define('PHP_SELF', $_SERVER['PHP_SELF']);
@@ -80,15 +84,16 @@ else
 {
     define('PHP_SELF', $_SERVER['SCRIPT_NAME']);
 }
-require(ROOT_PATH . 'includes/safety.php');
-require(ROOT_PATH . 'includes/inc_constant.php');
-require(ROOT_PATH . 'includes/cls_ecshop.php');
-require(ROOT_PATH . 'includes/cls_error.php');
-require(ROOT_PATH . 'includes/lib_time.php');
-require(ROOT_PATH . 'includes/lib_base.php');
-require(ROOT_PATH . 'includes/lib_common.php');
-require(ROOT_PATH . ADMIN_PATH . '/includes/lib_main.php');
-require(ROOT_PATH . ADMIN_PATH . '/includes/cls_exchange.php');
+
+require(ROOT_PATH . 'includes/safety.php'); // 载入安全性文件
+require(ROOT_PATH . 'includes/inc_constant.php'); // ECSHOP 常量
+require(ROOT_PATH . 'includes/cls_ecshop.php'); // EC 基础类
+require(ROOT_PATH . 'includes/cls_error.php'); // 错误处理类
+require(ROOT_PATH . 'includes/lib_time.php'); // 时间函数
+require(ROOT_PATH . 'includes/lib_base.php'); // 基础函数库
+require(ROOT_PATH . 'includes/lib_common.php'); // 公用函数库
+require(ROOT_PATH . ADMIN_PATH . '/includes/lib_main.php'); // 后台管理中心公用函数库
+require(ROOT_PATH . ADMIN_PATH . '/includes/cls_exchange.php'); // 后台自动操作数据库的类文件
 
 /* 对用户传入的变量进行转义操作。*/
 if (!get_magic_quotes_gpc())
@@ -133,7 +138,7 @@ $sess = new cls_session($db, $ecs->table('sessions'), $ecs->table('sessions_data
 /* 初始化 action */
 if (!isset($_REQUEST['act']))
 {
-    $_REQUEST['act'] = '';
+    $_REQUEST['act'] = ''; // 默认 act
 }
 elseif (($_REQUEST['act'] == 'login' || $_REQUEST['act'] == 'logout' || $_REQUEST['act'] == 'signin') &&
     strpos(PHP_SELF, '/privilege.php') === false)
@@ -150,6 +155,7 @@ elseif (($_REQUEST['act'] == 'forget_pwd' || $_REQUEST['act'] == 'reset_pwd' || 
 $_CFG = load_config();
 
 // TODO : 登录部分准备拿出去做，到时候把以下操作一起挪过去
+// 验证码
 if ($_REQUEST['act'] == 'captcha')
 {
     include(ROOT_PATH . 'includes/cls_captcha.php');
@@ -161,26 +167,31 @@ if ($_REQUEST['act'] == 'captcha')
     exit;
 }
 
+// 载入后台语言文件
 require(ROOT_PATH . 'languages/' .$_CFG['lang']. '/admin/common.php');
 require(ROOT_PATH . 'languages/' .$_CFG['lang']. '/admin/log_action.php');
 
+// 检测当前页面是否有语言文件，如果有就载入
 if (file_exists(ROOT_PATH . 'languages/' . $_CFG['lang'] . '/admin/' . basename(PHP_SELF)))
 {
     include(ROOT_PATH . 'languages/' . $_CFG['lang'] . '/admin/' . basename(PHP_SELF));
 }
 
+// 检测缓存文件夹是否存在，如果不存在就创建
 if (!file_exists('../temp/caches'))
 {
     @mkdir('../temp/caches', 0777);
     @chmod('../temp/caches', 0777);
 }
 
+// 检测后天编译文件夹是否存在，如果不存在就创建
 if (!file_exists('../temp/compiled/admin'))
 {
     @mkdir('../temp/compiled/admin', 0777);
     @chmod('../temp/compiled/admin', 0777);
 }
 
+// 清除文件状态缓存
 clearstatcache();
 
 /* 如果有新版本，升级 */
@@ -204,11 +215,11 @@ $smarty = new cls_template;
 
 $smarty->template_dir  = ROOT_PATH . ADMIN_PATH . '/templates';
 $smarty->compile_dir   = ROOT_PATH . 'temp/compiled/admin';
+
 if ((DEBUG_MODE & 2) == 2)
 {
     $smarty->force_compile = true;
 }
-
 
 $smarty->assign('lang', $_LANG);
 $smarty->assign('help_open', $_CFG['help_open']);
@@ -362,6 +373,7 @@ header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Cache-Control: no-cache, must-revalidate');
 header('Pragma: no-cache');
 
+// 设置调试模式
 if ((DEBUG_MODE & 1) == 1)
 {
     error_reporting(E_ALL);

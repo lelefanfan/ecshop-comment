@@ -1360,6 +1360,7 @@ function get_dyna_libs($theme, $tmp)
  */
 function dyna_libs_replace($matches)
 {
+    // static $a = 0;
 
     $key = '/' . $matches[1]; //例如匹配到一个库文件：'/library/cat_goods.lbi'
     // p($GLOBALS['libs'][$key]);

@@ -15,7 +15,7 @@
 <link rel="icon" href="animated_favicon.gif" type="image/gif" />
 <link href="<?php echo $this->_var['ecs_css_path']; ?>" rel="stylesheet" type="text/css" />
 <link rel="alternate" type="application/rss+xml" title="RSS|<?php echo $this->_var['page_title']; ?>" href="<?php echo $this->_var['feed_url']; ?>" />
-<link rel="stylesheet" type="text/css" href="./themes/default/images/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="themes/default/images/swiper.min.css">
 <script language='javascript' src='themes/default/js/swiper.min.js' type='text/javascript' charset='utf-8'></script>
 
 <?php echo $this->smarty_insert_scripts(array('files'=>'common.js,index.js')); ?>

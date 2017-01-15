@@ -52,6 +52,7 @@ if ($_REQUEST['act'] == 'login')
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
     header("Cache-Control: no-cache, must-revalidate");
     header("Pragma: no-cache");
+    // echo '000';die;
     if($_REQUEST['type']=='yunqi'){
         $ecs = $GLOBALS['ecs'];
         $db = $GLOBALS['db'];
@@ -152,6 +153,7 @@ if ($_REQUEST['act'] == 'login')
 /*------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'signin')
 {
+    // 验证验证码
     if (intval($_CFG['captcha']) & CAPTCHA_ADMIN)
     {
         include_once(ROOT_PATH . 'includes/cls_captcha.php');
@@ -172,6 +174,7 @@ elseif ($_REQUEST['act'] == 'signin')
 
     // echo md5(md5('shaolin123').$ec_salt);die;
 
+    // 根据 '$ec_salt' 的值，决定密码加密方式
     if(!empty($ec_salt))
     {
          /* 检查密码是否正确 */
@@ -197,7 +200,7 @@ elseif ($_REQUEST['act'] == 'signin')
             $supplier_is_check = suppliers_list_info(' is_check = 1 AND suppliers_id = ' . $row['suppliers_id']);
             if (empty($supplier_is_check))
             {
-                sys_msg($_LANG['login_disable'], 1);
+                sys_msg($_LANG['login_disable'], 1); //login_disable：您输入的帐号暂时不可用。
             }
         }
         //如果是云起认证，则使用云起账号登录
@@ -207,7 +210,9 @@ elseif ($_REQUEST['act'] == 'signin')
         }
         //end
         // 登录成功
+        // 更新session信息
         set_admin_session($row['user_id'], $row['user_name'], $row['action_list'], $row['last_login']);
+        // 设置云起账号id到session
         $_SESSION['suppliers_id'] = $row['suppliers_id'];
 		if(empty($row['ec_salt']))
 	    {
@@ -218,6 +223,7 @@ elseif ($_REQUEST['act'] == 'signin')
                  " WHERE user_id='$_SESSION[admin_id]'");
 		}
 
+        // 设置权限session
         if($row['action_list'] == 'all' && empty($row['last_login']))
         {
             $_SESSION['shop_guide'] = true;
@@ -228,9 +234,11 @@ elseif ($_REQUEST['act'] == 'signin')
                  " SET last_login='" . gmtime() . "', last_ip='" . real_ip() . "'".
                  " WHERE user_id='$_SESSION[admin_id]'");
 
+        // 记住密码
         if (isset($_POST['remember']))
         {
-            $time = gmtime() + 3600 * 24 * 365;
+            $time = gmtime() + 3600 * 24 * 365; // 有效期365天
+            // 将id和密码存到cookie
             setcookie('ECSCP[admin_id]',   $row['user_id'],                            $time);
             setcookie('ECSCP[admin_pass]', md5($row['password'] . $_CFG['hash_code']), $time);
         }
@@ -244,7 +252,7 @@ elseif ($_REQUEST['act'] == 'signin')
     }
     else
     {
-        sys_msg($_LANG['login_faild'], 1);
+        sys_msg($_LANG['login_faild'], 1); // login_faild：您输入的帐号信息不正确。
     }
 }
 

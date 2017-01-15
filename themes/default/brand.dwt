@@ -59,49 +59,297 @@
     <div class="blank5"></div>
   
    <!-- TemplateBeginEditable name="右边区域" -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
+
+<div class="all_ms">
+  <!--{foreach from=$cat_goods item=goods}-->
+  <a class="goodsItem" href="{$goods.url}"> <div  class="img-box"><img src="{$goods.thumb}" alt="{$goods.name|escape:html}" class="goodsimg" /></div>
+  <div class="goods-brief">{$goods.brief|truncate:20}</div>
+    <div class="gos-title">{$goods.short_name|escape:html}</div> 
+	<div class="prices">
+	    <!-- {if $goods.promote_price neq ""} -->
+    <font class="shop_s">{$lang.promote_price}<b>{$goods.promote_price}</b></font>
+    <!-- {else}-->
+    <font class="shop_s"><b>{$goods.shop_price}</b></font>
+    <!--{/if}-->
+	</div>
+	 
+
+  </a>
+  <!--{/foreach}-->
+  <div class="clear0"></div>
+</div>
+
+ <!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/recommend_best.lbi" -->
 
 <!-- {if $best_goods} -->
 <!-- {if $cat_rec_sign neq 1} -->
-<div class="box">
-<div class="box_2 centerPadd">
-  <div class="itemTit" id="itemBest">
-      {if $cat_rec[1]}
-      <h2><a href="javascript:void(0)" onclick="change_tab_style('itemBest', 'h2', this);get_cat_recommend(1, 0);">{$lang.all_goods}</a></h2>
-      {foreach from=$cat_rec[1] item=rec_data}
-      <h2 class="h2bg"><a href="javascript:void(0)" onclick="change_tab_style('itemBest', 'h2', this);get_cat_recommend(1, {$rec_data.cat_id})">{$rec_data.cat_name}</a></h2>
-      {/foreach}
-      {/if}
-  </div>
-  <div id="show_best_area" class="clearfix goodsBox">
+<DIV class="all_t"><SPAN>精品推荐</SPAN><a href="../search.php?intro=best">更多>></a> </DIV>
+<div id="show_best_area" class="clearfix goodsBox all_mid">
   <!-- {/if} -->
   <!--{foreach from=$best_goods item=goods}-->
-  <div class="goodsItem">
-         <span class="best"></span>
-           <a href="{$goods.url}"><img src="{$goods.thumb}" alt="{$goods.name|escape:html}" class="goodsimg" /></a><br />
-           <a href="#"><img src="images/bnt_buy.gif" /></a> <a href="#"><img src="images/bnt_coll.gif" /></a>
-           <p><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.short_style_name}</a></p>
-           <font class="f1">
-           <!-- {if $goods.promote_price neq ""} -->
-          {$goods.promote_price}
-          <!-- {else}-->
-          {$goods.shop_price}
-          <!--{/if}-->
-           </font>
-        </div>
-  <!--{/foreach}-->
-  <div class="more"><a href="../search.php?intro=best"><img src="images/more.gif" /></a></div>
-  <!-- {if $cat_rec_sign neq 1} -->
+  <div class="goodsItem"> <span class="best"></span> <a href="{$goods.url}"><img src="{$goods.thumb}" alt="{$goods.name|escape:html}" class="goodsimg" /></a><br />
+    <p><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.short_style_name}</a></p>
+    <div class="prices">
+      <!-- {if $goods.promote_price neq ""} -->
+      <font class="shop_s">{$lang.promote_price}<b>{$goods.promote_price}</b></font>
+      <!-- {else}-->
+      <font class="shop_s"><b>{$goods.shop_price}</b></font>
+      <!--{/if}-->
+      <!-- {if $show_marketprice} -->
+      / <font class="market_s">{$goods.market_price}</font>
+      <!-- {/if} -->
+    </div>
   </div>
+  <!--{/foreach}-->
+  <!-- {if $cat_rec_sign neq 1} -->
+  <div class="clear0"></div>
 </div>
-</div>
-<div class="blank5"></div>
-  <!-- {/if} -->
+<!-- {/if} -->
 <!-- {/if} -->
 
  <!-- #EndLibraryItem -->
-  <!-- #BeginLibraryItem "/library/goods_list.lbi" --><!-- #EndLibraryItem -->
-  <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/goods_list.lbi" -->
+
+<div class="prclist">
+  <div class="displaylist">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="tdl"><span>{$cat.name|escape:html}</span>相关商品<b>{$pager.record_count}</b>个 </td>
+        <td><a name='goods_list'></a></td>
+        <td class="tdr"><table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+            <td>排序：</td>
+              <td><form method="GET" class="sort list-paixu" name="listform">
+                    <a href="{$script_name}.php?category={$category}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=goods_id&order=<!-- {if $pager.sort == 'goods_id' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->#goods_list"><img src="images/goods_id_<!-- {if $pager.sort == 'goods_id'} -->{$pager.order}<!-- {else} -->default<!-- {/if} -->.gif" alt="{$lang.sort.goods_id}"></a> <a href="{$script_name}.php?category={$category}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=shop_price&order=<!-- {if $pager.sort == 'shop_price' && $pager.order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->#goods_list"><img src="images/shop_price_<!-- {if $pager.sort == 'shop_price'} -->{$pager.order}<!-- {else} -->default<!-- {/if} -->.gif" alt="{$lang.sort.shop_price}"></a> <a href="{$script_name}.php?category={$category}&display={$pager.display}&brand={$brand_id}&price_min={$price_min}&price_max={$price_max}&filter_attr={$filter_attr}&page={$pager.page}&sort=last_update&order=<!-- {if $pager.sort == 'last_update' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->#goods_list"><img src="images/last_update_<!-- {if $pager.sort == 'last_update'} -->{$pager.order}<!-- {else} -->default<!-- {/if} -->.gif" alt="{$lang.sort.last_update}"></a>
+                  <input type="hidden" name="category" value="{$category}" />
+                  <input type="hidden" name="display" value="{$pager.display}" id="display" />
+                  <input type="hidden" name="brand" value="{$brand_id}" />
+                  <input type="hidden" name="price_min" value="{$price_min}" />
+                  <input type="hidden" name="price_max" value="{$price_max}" />
+                  <input type="hidden" name="filter_attr" value="{$filter_attr}" />
+                  <input type="hidden" name="page" value="{$pager.page}" />
+                  <input type="hidden" name="sort" value="{$pager.sort}" />
+                  <input type="hidden" name="order" value="{$pager.order}" />
+                </form></td>
+            </tr>
+          </table></td>
+      </tr>
+    </table>
+  </div>
+  <div class="blank5"></div>
+  <!-- {if $category > 0} -->
+  <form name="compareForm" action="compare.php" method="post" onSubmit="return compareGoods(this);">
+    <!-- {/if} -->
+    <!-- {if $pager.display == 'list'} -->
+    <div class="goodsList">
+      <!--{foreach name=goods_list from=$goods_list item=goods}-->
+      <ul class="clearfix bgcolor"
+        
+      
+      <!--{if $smarty.foreach.goods_list.index mod 2 eq 0}-->
+      id=""
+      <!--{else}-->
+      id="bgcolor"
+      <!--{/if}-->
+      >
+      <li> <br>
+        <a href="javascript:;" id="compareLink" onClick="Compare.add({$goods.goods_id},'{$goods.goods_name|escape:"html"}','{$goods.type}')" class="f6">比较</a> </li>
+      <li class="thumb"><a href="{$goods.url}"><img src="{$goods.goods_thumb}" alt="{$goods.goods_name}" /></a></li>
+      <li class="goodsName"> <a href="{$goods.url}" class="f6">
+        <!-- {if $goods.goods_style_name} -->
+        {$goods.goods_style_name}<br />
+        <!-- {else} -->
+        {$goods.goods_name}<br />
+        <!-- {/if} -->
+        </a>
+        <!-- {if $goods.goods_brief} -->
+        {$lang.goods_brief}{$goods.goods_brief}<br />
+        <!-- {/if} -->
+      </li>
+      <li>
+        <!-- {if $show_marketprice} -->
+        {$lang.market_price}<font class="market">{$goods.market_price}</font><br />
+        <!-- {/if} -->
+        <!--{if $goods.promote_price neq "" } -->
+        {$lang.promote_price}<font class="shop">{$goods.promote_price}</font><br />
+        <!--{else}-->
+        {$lang.shop_price}<font class="shop">{$goods.shop_price}</font><br />
+        <!--{/if}-->
+      </li>
+      <li class="action"> <a href="javascript:collect({$goods.goods_id});" class="abg f6">{$lang.favourable_goods}</a> <a href="javascript:addToCart({$goods.goods_id})"><img src="../images/bnt_buy_1.gif"></a> </li>
+      </ul>
+      <!--{/foreach}-->
+    </div>
+    <!-- {elseif $pager.display == 'grid'} -->
+    <div class="centerPadd">
+      <div class="clearfix goodsBox" style="border:none;">
+        <!--{foreach from=$goods_list item=goods}-->
+        <!-- {if $goods.goods_id} -->
+        <div class="goodsItem"> <a href="{$goods.url}" class="img-box"><img src="{$goods.goods_thumb}" alt="{$goods.goods_name}" class="goodsimg" /></a>
+        <div class="goods-info">
+            <div class="goods-title"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.goods_name}</a></div>
+            <div class="goods-ms">
+              {$goods.goods_brief}
+            </div>
+            <div class="clearfix price-box">
+              <div class="shop_s">{$goods.shop_price}</div>
+              <a class="price-btn" href="{$goods.url}">立即购买</a>
+            </div>
+            
+        </div>
+        </div>
+        <!--{/if}-->
+        <!--{/foreach}-->
+      </div>
+    </div>
+    <!-- {elseif $pager.display == 'text'} -->
+    <div class="goodsList">
+      <!--{foreach from=$goods_list item=goods}-->
+      <ul class="clearfix bgcolor"
+        
+      
+      <!--{if $smarty.foreach.goods_list.index mod 2 eq 0}-->
+      id=""
+      <!--{else}-->
+      id="bgcolor"
+      <!--{/if}-->
+      >
+      <li style="margin-right:15px;"> <a href="javascript:;" id="compareLink" onClick="Compare.add({$goods.goods_id},'{$goods.goods_name|escape:"html"}','{$goods.type}')" class="f6">{$lang.compare}</a> </li>
+      <li class="goodsName"> <a href="{$goods.url}" class="f6 f5">
+        <!-- {if $goods.goods_style_name} -->
+        {$goods.goods_style_name}<br />
+        <!-- {else} -->
+        {$goods.goods_name}<br />
+        <!-- {/if} -->
+        </a>
+        <!-- {if $goods.goods_brief} -->
+        {$lang.goods_brief}{$goods.goods_brief}<br />
+        <!-- {/if} -->
+      </li>
+      <li>
+        <!-- {if $show_marketprice} -->
+        {$lang.market_price}<font class="market">{$goods.market_price}</font><br />
+        <!-- {/if} -->
+        <!--{if $goods.promote_price neq "" } -->
+        {$lang.promote_price}<font class="shop">{$goods.promote_price}</font><br />
+        <!--{else}-->
+        {$lang.shop_price}<font class="shop">{$goods.shop_price}</font><br />
+        <!--{/if}-->
+      </li>
+      <li class="action"> <a href="javascript:collect({$goods.goods_id});" class="abg f6">{$lang.favourable_goods}</a> <a href="javascript:addToCart({$goods.goods_id})"><img src="../images/bnt_buy_1.gif"></a> </li>
+      </ul>
+      <!--{/foreach}-->
+    </div>
+    <!-- {/if} -->
+    <!-- {if $category > 0} -->
+  </form>
+  <!-- {/if} -->
+</div>
+<div class="blank5"></div>
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script>
+<script type="text/javascript">
+window.onload = function()
+{
+  Compare.init();
+  fixpng();
+}
+{foreach from=$lang.compare_js item=item key=key}
+{if $key neq 'button_compare'}
+var {$key} = "{$item}";
+{else}
+var button_compare = '';
+{/if}
+{/foreach}
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+
+ <!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/pages.lbi" -->
+
+ <div class="page-form clearfix">
+<!--翻页 start-->
+<form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
+  <!-- {if $pager.styleid eq 0 } -->
+  <div id="pager"> {$lang.pager_1}{$pager.record_count}{$lang.pager_2}{$lang.pager_3}{$pager.page_count}{$lang.pager_4} <span> <a href="{$pager.page_first}">{$lang.page_first}</a> <a href="{$pager.page_prev}">{$lang.page_prev}</a> <a href="{$pager.page_next}">{$lang.page_next}</a> <a href="{$pager.page_last}">{$lang.page_last}</a> </span>
+    <!--{foreach from=$pager.search key=key item=item}-->
+    {if $key eq 'keywords'}
+    <input type="hidden" name="{$key}" value="{$item|escape:decode_url}" />
+    {else}
+    <input type="hidden" name="{$key}" value="{$item}" />
+    {/if}
+    <!--{/foreach}-->
+    <select name="page" id="page" onchange="selectPage(this)">
+      
+    {html_options options=$pager.array selected=$pager.page}
+    
+    </select>
+  </div>
+  <!--{else}-->
+  <!--翻页 start-->
+  <div id="pager" class="pagebar">
+    <!-- {if $pager.page_first} -->
+    <a href="{$pager.page_first}">{$lang.page_first} ...</a>
+    <!-- {/if} -->
+    <!-- {if $pager.page_prev} -->
+    <a class="prev" href="{$pager.page_prev}">上一页</a>
+    <!-- {/if} -->
+    <!-- {if $pager.page_count neq 1} -->
+    <!--{foreach from=$pager.page_number key=key item=item}-->
+    <!-- {if $pager.page eq $key} -->
+    <span class="lis page_now">{$key}</span>
+    <!-- {else} -->
+    <a href="{$item}" class="lis">{$key}</a>
+    <!-- {/if} -->
+    <!--{/foreach}-->
+    <!-- {/if} -->
+    <!-- {if $pager.page_next} -->
+    <a class="next" href="{$pager.page_next}">下一页</a>
+    <!-- {/if} -->
+    <!-- {if $pager.page_last} -->
+    <a class="last" href="{$pager.page_last}">...{$lang.page_last}</a>
+    <!-- {/if} -->
+    <!-- {if $pager.page_kbd} -->
+    <!--{foreach from=$pager.search key=key item=item}-->
+    {if $key eq 'keywords'}
+    <input type="hidden" name="{$key}" value="{$item|escape:decode_url}" />
+    {else}
+    <input type="hidden" name="{$key}" value="{$item}" />
+    {/if}
+    <!--{/foreach}-->
+    <kbd style="float:left; margin-left:8px; position:relative; bottom:3px;">
+    <input type="text" name="page" onkeydown="if(event.keyCode==13)selectPage(this)" size="3" class="B_blue" />
+    </kbd>
+    <!-- {/if} -->
+  </div>
+  <!--翻页 END-->
+  <!-- {/if} -->
+</form>
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script>
+</div>
+ <!-- #EndLibraryItem -->
 <!-- TemplateEndEditable -->
 
 

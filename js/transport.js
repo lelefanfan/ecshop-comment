@@ -23,10 +23,10 @@ var Transport =
   */
   debugging :
   {
-    isDebugging : 0,
-    debuggingMode : 0,
-    linefeed : "",
-    containerId : 0
+    isDebugging : 0, //调试模式开关，1：打开，0：关闭
+    debuggingMode : 0, //调试信息显示模式，1：innerHTML，2：alert
+    linefeed : "", //换行符
+    containerId : 0 //显示错误的容器ID
   },
 
   /* *
@@ -80,45 +80,50 @@ var Transport =
   */
   run : function (url, params, callback, transferMode, responseType, asyn, quiet)
   {
-    /* 处理用户在调用该方法时输入的参数 */
-    params = this.parseParams(params);
+    params = this.parseParams(params); //解析参数
     transferMode = typeof(transferMode) === "string"
     && transferMode.toUpperCase() === "GET"
     ? "GET"
-    : "POST";
+    : "POST"; //请求方式，只有POST与GET两种
 
-    if (transferMode === "GET")
+    if (transferMode === "GET") //如果是GET请求，将请求url与params进行拼接，返回新的url
     {
       var d = new Date();
 
+      // 设置get请求url，将url与params拼接
       url += params ? (url.indexOf("?") === - 1 ? "?" : "&") + params : "";
       url = encodeURI(url) + (url.indexOf("?") === - 1 ? "?" : "&") + d.getTime() + d.getMilliseconds();
       params = null;
     }
 
+    // 返回类型，有"JSON"、"XML"和"TEXT"三种
     responseType = typeof(responseType) === "string" && ((responseType = responseType.toUpperCase()) === "JSON" || responseType === "XML") ? responseType : "TEXT";
+    // 异步或者同步，异步为true，同步为false
     asyn = asyn === false ? false : true;
 
-    /* 处理HTTP请求和响应 */
+    // 创建XMLHttpRequest对象
     var xhr = this.createXMLHttpRequest();
 
     try
     {
-      var self = this;
+      var self = this; //将当前对象赋值给self
 
+      // 传输过程中自动调用方法
       if (typeof(self.onRunning) === "function" && !quiet)
       {
         self.onRunning();
       }
 
+      // 规定请求的类型、URL 以及是否异步处理请求
       xhr.open(transferMode, url, asyn);
 
+      // POST请求头信息设置
       if (transferMode === "POST")
       {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       }
 
-      if (asyn)
+      if (asyn) // 异步
       {
         xhr.onreadystatechange = function ()
         {
@@ -133,12 +138,12 @@ var Transport =
                  * (such as post an item to the database)
                  * You could instead return a status code of '201 Created'
                  */
-
+                // 请求完成后自动调用的方法
                 if (typeof(self.onComplete) === "function")
                 {
                   self.onComplete();
                 }
-
+                //执行回调函数
                 if (typeof(callback) === "function")
                 {
                   //这里会报错呢。。真是666  原因是xhr.responseText不是对象格式的字符串,担心有其他功能,这里先搁置
@@ -192,15 +197,18 @@ var Transport =
             xhr = null;
           }
         }
+        // 发送请求
         if (xhr != null) xhr.send(params);
       }
-      else
+      else // 同步
       {
+        // 运行中自动执行的方法
         if (typeof(self.onRunning) === "function")
         {
           self.onRunning();
         }
 
+        // 发送请求
         xhr.send(params);
 
         var result = self.parseResult(responseType, xhr);
@@ -238,35 +246,36 @@ var Transport =
   */
   displayDebuggingInfo : function (info, type)
   {
-    if ( ! this.debugging.debuggingMode)
+    if ( ! this.debugging.debuggingMode) //alert方式显示错误信息
     {
       alert(info);
     }
-    else
+    else //innerHTML方式显示错误信息
     {
 
-      var id = this.debugging.containerId;
-      if ( ! document.getElementById(id))
+      var id = this.debugging.containerId; //错误容器id
+      if ( ! document.getElementById(id)) //错误容器不存在，创建容器
       {
         div = document.createElement("DIV");
-        div.id = id;
-        div.style.position = "absolute";
-        div.style.width = "98%";
-        div.style.border = "1px solid #f00";
-        div.style.backgroundColor = "#eef";
+        div.id = id; //id
+        div.style.position = "absolute"; //定位
+        div.style.width = "98%"; //宽度
+        div.style.border = "1px solid #f00";  //边框
+        div.style.backgroundColor = "#eef"; //背景颜色
         var pageYOffset = document.body.scrollTop
         || window.pageYOffset
-        || 0;
+        || 0; //网页被卷去的高度
         div.style.top = document.body.clientHeight * 0.6
         + pageYOffset
-        + "px";
-        document.body.appendChild(div);
+        + "px"; //定位容器顶部高度
+        document.body.appendChild(div); //将div添加到body末尾
         div.innerHTML = "<div></div>"
         + "<hr style='height:1px;border:1px dashed red;'>"
-        + "<div></div>";
+        + "<div></div>"; //为div添加代码
       }
 
-      var subDivs = div.getElementsByTagName("DIV");
+      var subDivs = div.getElementsByTagName("DIV");//获取容器内的div
+      //错误类型为param就在第一个div显示错误，否则在第二个容器显示错误
       if (type === "param")
       {
         subDivs[0].innerHTML = info;
@@ -285,34 +294,34 @@ var Transport =
   * @return      返回一个XMLHttpRequest对象
   * @type    Object
   */
-  createXMLHttpRequest : function ()
+createXMLHttpRequest : function ()
+{
+  var xhr = null;
+
+  if (window.ActiveXObject)
   {
-    var xhr = null;
+    var versions = ['Microsoft.XMLHTTP', 'MSXML6.XMLHTTP', 'MSXML5.XMLHTTP', 'MSXML4.XMLHTTP', 'MSXML3.XMLHTTP', 'MSXML2.XMLHTTP', 'MSXML.XMLHTTP'];
 
-    if (window.ActiveXObject)
+    for (var i = 0; i < versions.length; i ++ )
     {
-      var versions = ['Microsoft.XMLHTTP', 'MSXML6.XMLHTTP', 'MSXML5.XMLHTTP', 'MSXML4.XMLHTTP', 'MSXML3.XMLHTTP', 'MSXML2.XMLHTTP', 'MSXML.XMLHTTP'];
-
-      for (var i = 0; i < versions.length; i ++ )
+      try
       {
-        try
-        {
-          xhr = new ActiveXObject(versions[i]);
-          break;
-        }
-        catch (ex)
-        {
-          continue;
-        }
+        xhr = new ActiveXObject(versions[i]);
+        break;
+      }
+      catch (ex)
+      {
+        continue;
       }
     }
-    else
-    {
-      xhr = new XMLHttpRequest();
-    }
+  }
+  else
+  {
+    xhr = new XMLHttpRequest();
+  }
 
-    return xhr;
-  },
+  return xhr;
+},
 
   /* *
   * 当传输过程发生错误时将调用此方法。
@@ -339,14 +348,14 @@ var Transport =
   */
   parseParams : function (params)
   {
-    var legalParams = "";
-    params = params ? params : "";
+    var legalParams = ""; //用于保存合法参数
+    params = params ? params : ""; //检测参数是否存在
 
-    if (typeof(params) === "string")
+    if (typeof(params) === "string") //如果参数类型为字符串
     {
       legalParams = params;
     }
-    else if (typeof(params) === "object")
+    else if (typeof(params) === "object") //如果参数类型为对象
     {
       try
       {
@@ -358,15 +367,15 @@ var Transport =
         return false;
       }
     }
-    else
+    else //无效参数
     {
       alert("Invalid parameters!");
       return false;
     }
 
-    if (this.debugging.isDebugging)
+    if (this.debugging.isDebugging) //调试模式，打印错误信息
     {
-      var lf = this.debugging.linefeed,
+      var lf = this.debugging.linefeed, //换行符
       info = "[Original Parameters]" + lf + params + lf + lf
       + "[Parsed Parameters]" + lf + legalParams;
 
@@ -399,30 +408,30 @@ var Transport =
   parseResult : function (responseType, xhr)
   {
     var result = null;
-
-    switch (responseType)
+    //根据不同的返回类型，采取不同的设置
+    switch (responseType) 
     {
-      case "JSON" :
-        result = this.preFilter(xhr.responseText);
+      case "JSON" : //如果返回类型为JSON，就将返回的JSON字符串转换为JSON对象
+        result = this.preFilter(xhr.responseText); //获取返回文本，并过滤掉BOM头
         try
         {
-          result = result.parseJSON();
+          result = result.parseJSON(); //将JSON字符串转换为JSON对象
         }
         catch (ex)
         {
           throw this.filename + "/parseResult() error: can't parse to JSON.\n\n" + xhr.responseText;
         }
         break;
-      case "XML" :
+      case "XML" : //如果返回类型为XML，就将XML直接返回
         result = xhr.responseXML;
         break;
-      case "TEXT" :
+      case "TEXT" : //如果返回类型为TEXT，就过滤掉BOM头直接返回
         result = this.preFilter(xhr.responseText);
         break;
       default :
         throw this.filename + "/parseResult() error: unknown response type:" + responseType;
     }
-
+    // 显示错误信息
     if (this.debugging.isDebugging)
     {
       var lf = this.debugging.linefeed,

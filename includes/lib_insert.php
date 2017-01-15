@@ -228,7 +228,7 @@ function insert_ads($arr)
 function insert_member_info()
 {
     $need_cache = $GLOBALS['smarty']->caching;
-    $GLOBALS['smarty']->caching = false;
+    $GLOBALS['smarty']->caching = false; //模板不缓存
 
     if ($_SESSION['user_id'] > 0)
     {
@@ -240,6 +240,7 @@ function insert_member_info()
         {
             $GLOBALS['smarty']->assign('ecs_username', stripslashes($_COOKIE['ECS']['username']));
         }
+        // 登录验证码功能
         $captcha = intval($GLOBALS['_CFG']['captcha']);
         if (($captcha & CAPTCHA_LOGIN) && (!($captcha & CAPTCHA_LOGIN_FAIL) || (($captcha & CAPTCHA_LOGIN_FAIL) && $_SESSION['login_fail'] > 2)) && gd_version() > 0)
         {
@@ -247,7 +248,7 @@ function insert_member_info()
             $GLOBALS['smarty']->assign('rand', mt_rand());
         }
     }
-    $output = $GLOBALS['smarty']->fetch('library/member_info.lbi');
+    $output = $GLOBALS['smarty']->fetch('library/member_info.lbi'); //会员模板代码
 
     $GLOBALS['smarty']->caching = $need_cache;
 

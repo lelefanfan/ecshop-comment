@@ -109,8 +109,8 @@ class cls_template
 
         $this->_checkfile = false;
         // echo $this->_echash;die;
-        $out = $this->fetch($filename, $cache_id); // 模板文件编译后静态文档代码
-
+        $out = $this->fetch($filename, $cache_id); // 模板文件编译后缓存文件代码
+        // file_put_contents('a.html', $out);die('ok');
         if (strpos($out, $this->_echash) !== false) // 处理动态内容
         {
             $k = explode($this->_echash, $out);
@@ -156,6 +156,7 @@ class cls_template
         }
         else
         {
+
             // 获取模板文件路径
             if ($this->_checkfile)
             {
@@ -173,7 +174,6 @@ class cls_template
             if ($this->direct_output)
             {
                 $this->_current_file = $filename;
-
                 $out = $this->_eval($this->fetch_str(file_get_contents($filename)));
             }
             else
@@ -190,7 +190,7 @@ class cls_template
                         $this->template[] = $filename;
                     }
 
-                    // 编译模板函数                    
+                    // 编译模板函数
                     $out = $this->make_compiled($filename);
 
                     if ($cache_id)
@@ -508,7 +508,6 @@ class cls_template
 
                 case 'include':
                     $t = $this->get_para(substr($tag, 8), 0);
-
                     return '<?php echo $this->fetch(' . "'$t[file]'" . '); ?>';
                     break;
 
@@ -541,7 +540,6 @@ class cls_template
 
                 case 'cycle' :
                     $t = $this->get_para(substr($tag, 6), 0);
-
                     return '<?php echo $this->cycle(' . $this->make_array($t) . '); ?>';
                     break;
 
@@ -744,6 +742,7 @@ class cls_template
     function get_para($val, $type = 1) // 处理insert外部函数/需要include运行的函数的调用数据
     {
         $pa = $this->str_trim($val);
+
         foreach ($pa AS $value)
         {
             if (strrpos($value, '='))
@@ -1229,7 +1228,6 @@ class cls_template
         {
             $str = str_replace(' =', '=', $str);
         }
-
         return explode(' ', trim($str));
     }
 

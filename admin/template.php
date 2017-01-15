@@ -26,11 +26,12 @@ require_once('includes/lib_template.php');
 /*------------------------------------------------------ */
 if ($_REQUEST['act'] == 'list')
 {
+    // 检查账号是否有权限访问该页面
     admin_priv('template_select');
 
-    /* 获得当前的模版的信息 */
+    /* 获得当前的模版的主题（默认是default） */
     $curr_template = $_CFG['template'];
-
+    // 当前主题样式名称（默认是空）
     $curr_style = $_CFG['stylename'];
 
     /* 获得可用的模版 */
@@ -45,7 +46,6 @@ if ($_REQUEST['act'] == 'list')
         }
     }
     @closedir($template_dir);
-
     /* 获得可用的模版的可选风格数组 */
     $templates_style = array();
     if (count($available_templates) > 0)
@@ -55,6 +55,8 @@ if ($_REQUEST['act'] == 'list')
             $templates_style[$value['code']] = read_tpl_style($value['code'], 2);
         }
     }
+
+    // p($templates_style);
 
     /* 清除不需要的模板设置 */
     $available_code = array();
@@ -107,10 +109,13 @@ if ($_REQUEST['act'] == 'setup')
     $temp_regions   = get_template_region($template_theme, $curr_template.'.dwt', false);
     // 获取所有区域（不包含 doctitle 和 head 区域）及区域内库列表，从模板文件中获取
     $temp_libs      = get_template_region($template_theme, $curr_template.'.dwt', true);
+
+    // p($temp_regions);die;
+
     // 获取当前模板下允许设置的库项目，从主题模板里的 libs.xml 文件中获取    
     $editable_libs      = get_editable_libs($curr_template, $page_libs[$curr_template]);
 
-    
+    // p($editable_libs);die;
 
     if (empty($editable_libs))
     {

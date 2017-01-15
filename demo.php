@@ -14,15 +14,9 @@
 */
 
 define('IN_ECS', true);
+
 // 载入前台公用文件
 require(dirname(__FILE__) . '/includes/init.php');
-$smarty->caching = false;
-$smarty->assign('uname','ABC');
-$smarty->display('demo.dwt');
-die;
-
-
-
 
 // 检测调试模式设置模板缓存类型
 if ((DEBUG_MODE & 2) != 2)
@@ -109,7 +103,7 @@ if ($act == 'cat_rec')
 /* 缓存编号 */
 $cache_id = sprintf('%X', crc32($_SESSION['user_rank'] . '-' . $_CFG['lang']));
 // echo $cache_id;die;
-if (!$smarty->is_cached('index.dwt', $cache_id))
+if (!$smarty->is_cached('demo.dwt', $cache_id))
 {
     // 分派相关变量到模板
     assign_template();
@@ -118,7 +112,6 @@ if (!$smarty->is_cached('index.dwt', $cache_id))
 
     $smarty->assign('page_title',      $position['title']);    // 页面标题
     $smarty->assign('ur_here',         $position['ur_here']);  // 当前位置
-
     $smarty->assign('keywords',        htmlspecialchars($_CFG['shop_keywords'])); // 关键字
     $smarty->assign('description',     htmlspecialchars($_CFG['shop_desc'])); // 描述
     $smarty->assign('flash_theme',     $_CFG['flash_theme']);  // Flash轮播图片模板
@@ -155,6 +148,7 @@ if (!$smarty->is_cached('index.dwt', $cache_id))
     $links = index_get_links();
     $smarty->assign('img_links',       $links['img']); // 图片链接
     $smarty->assign('txt_links',       $links['txt']); // 文字链接
+
     $smarty->assign('data_dir',        DATA_DIR);       // 数据目录
 
     /* 首页推荐分类 */
