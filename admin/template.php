@@ -103,26 +103,24 @@ if ($_REQUEST['act'] == 'setup')
     $template_theme = $_CFG['template']; // 前台模板主题
     // 当前需要设置的模板
     $curr_template  = empty($_REQUEST['template_file']) ? 'index' : $_REQUEST['template_file'];
-    // 存储当前模板所有库项目，并对模板中区域内存在库设定区域、排序、是否显示
+    // 存储当前模板所有固定库项目，并对模板中区域内存在库设定区域、排序、是否显示
     $temp_options   = array();
-    // 获取所有区域（不包含 doctitle 和 head 区域），从模板文件中获取
+    // 获取模板文件中所有区域（不包含 doctitle 和 head 区域）
     $temp_regions   = get_template_region($template_theme, $curr_template.'.dwt', false);
-    // 获取所有区域（不包含 doctitle 和 head 区域）及区域内库列表，从模板文件中获取
+    // 获取模板文件中区域下所有库项目（不包含 doctitle 和 head 区域的库项目），其中包含了库项目的library、region、lib、sort_order四个信息
     $temp_libs      = get_template_region($template_theme, $curr_template.'.dwt', true);
-
-    // p($temp_regions);die;
 
     // 获取当前模板下允许设置的库项目，从主题模板里的 libs.xml 文件中获取    
     $editable_libs      = get_editable_libs($curr_template, $page_libs[$curr_template]);
 
-    // p($editable_libs);die;
+    // p($temp_libs);
 
     if (empty($editable_libs))
     {
         /* 获取数据库中数据，并跟模板中数据核对,并设置动态内容 */
         /* 固定内容 */
 
-        // PS：$page_libs 保存的是每个模板允许设置的库项目，从 './admin/includes/lib_template' 中获取
+        // $page_libs 保存的是每个模板全部的库项目，从 './admin/includes/lib_template' 中获取
         foreach ($page_libs[$curr_template] AS $val => $number_enabled)
         {
             $lib = basename(strtolower(substr($val, 0, strpos($val, '.'))));
@@ -134,7 +132,7 @@ if ($_REQUEST['act'] == 'setup')
                 $temp_options[$lib]['library'] = $val;
                 $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0;
                 $temp_options[$lib]['number'] = $number_enabled;
-            }
+            }            
         }
 
     }
@@ -142,28 +140,34 @@ if ($_REQUEST['act'] == 'setup')
     {
         /* 获取数据库中数据，并跟模板中数据核对,并设置动态内容 */
         /* 固定内容 */
-
-        // PS：$page_libs 保存的是每个模板全部的库项目，从 './admin/includes/lib_template' 中获取
+        // $page_libs 保存的是每个模板全部的库项目，从 './admin/includes/lib_template' 中获取
         foreach ($page_libs[$curr_template] AS $val => $number_enabled)
         {
             $lib = basename(strtolower(substr($val, 0, strpos($val, '.')))); // 获取库文件名
+
             // 如果当前库文件名不属于动态库项目
-            if (!in_array($lib, $GLOBALS['dyna_libs'])) // $GLOBALS['dyna_libs'] 数据来源于 './admin/includes/lib_template' 文件
+            // $GLOBALS['dyna_libs'] 数据来源于 './admin/includes/lib_template' 文件
+            if (!in_array($lib, $GLOBALS['dyna_libs'])) 
             {
                 /* 先排除动态内容 */
-                $temp_options[$lib]            = get_setted($val, $temp_libs); // 获得指定库项目在模板中的设置内容( array('region' => '', 'sort_order' => 0, 'display' => 0) )
+                // 获得指定库项目在模板中的设置内容( array('region' => '', 'sort_order' => 0, 'display' => 0) )
+                // 如果固定库项目 $val 存在于模板文件中，就设置 region、sort_order、display三个信息的值，如果不存在模板中这三个信息的值就为空或0。
+                $temp_options[$lib]            = get_setted($val, $temp_libs); 
+
+                // p($temp_options[$lib]);
                 $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib]; //存储库文件中文名称
-                $temp_options[$lib]['library'] = $val; //存储库文件路径
+                $temp_options[$lib]['library'] = $val; //库文件路径
                 $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0; //启动？
                 $temp_options[$lib]['number'] = $number_enabled; // 数量？
 
                 if (!in_array($lib, $editable_libs))
                 {
-                    $temp_options[$lib]['editable'] = 1; // 不可编辑
+                    $temp_options[$lib]['editable'] = 1; // 可编辑
                 }
             }
+            // p($temp_options);
         }
-        // p($temp_options);die;
+        // p($temp_options);
     }
 
     /* 动态内容 */
@@ -197,9 +201,9 @@ if ($_REQUEST['act'] == 'setup')
         }
     }
 
-    // p($temp_options);die;
+    // p($temp_libs);die;
 
-    // 循环当前模板库项目
+    // 循环当前模板文件区域下的库项目
     foreach ($temp_libs AS $val)
     {
         /* 对动态内容赋值 */
@@ -255,11 +259,12 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
-    // p($temp_options);die;
+    // echo '2';die;
+    // p(cat_list(0, 0, true));
     assign_query_info();
     $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 面包屑导航名称：设置模版
     $smarty->assign('curr_template_file', $curr_template); // 当前模板
-    $smarty->assign('temp_options',       $temp_options); // 当前模板所有库项目
+    $smarty->assign('temp_options',       $temp_options); // 当前模板所有固定库项目
     $smarty->assign('temp_regions',       $temp_regions); // 当前模板区域
     $smarty->assign('cate_goods',         $cate_goods); // 分类下的商品
     $smarty->assign('brand_goods',        $brand_goods); // 品牌下的商品

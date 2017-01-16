@@ -50,7 +50,7 @@ $template_files = array(
     'exchange_list.dwt',
 );
 
-/* 每个模板允许设置的库项目 */
+/* 每个模板可以使用的库项目 */
 $page_libs = array(
     'demo' => array(
     ),
@@ -378,8 +378,9 @@ function get_template_info($template_name, $template_style='')
  * 获得模版文件中的编辑区域及其内容
  *
  * @access  public
- * @param   string  $tmp_name   模版名称
+ * @param   string  $tmp_name   模版主题名称
  * @param   string  $tmp_file   模版文件名称
+ * @param   boolean $lib        是否返回库文件，false：以数组形式只返回所有区域文件，true:同时返回区域下库文件
  * @return  array
  */
 function get_template_region($tmp_name, $tmp_file, $lib=true)
@@ -400,10 +401,13 @@ function get_template_region($tmp_name, $tmp_file, $lib=true)
         $matches = array();
         $result  = preg_match_all('/(<!--\\s*TemplateBeginEditable\\sname=")([^"]+)("\\s*-->)/', $content, $matches, PREG_SET_ORDER);
 
+        // p($matches);
+
         if ($result && $result > 0)
         {
             foreach ($matches AS $key => $val)
             {
+                // 排除 'doctitle'和'head' 两个区域
                 if ($val[2] != 'doctitle' && $val[2] != 'head')
                 {
                     $regions[] = $val[2];
@@ -421,7 +425,7 @@ function get_template_region($tmp_name, $tmp_file, $lib=true)
     // 同时返回区域下库项目
 
     $libs = array();
-    /* 遍历所有编辑区 */
+    /* 遍历所有编辑区，不包括'doctitle'和'head' 两个区域 */
     foreach ($regions AS $key => $val)
     {
         $matches = array();
