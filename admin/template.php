@@ -98,6 +98,7 @@ if ($_REQUEST['act'] == 'list')
 
 if ($_REQUEST['act'] == 'setup')
 {
+
     admin_priv('template_setup'); // 权限检测
 
     $template_theme = $_CFG['template']; // 前台模板主题
@@ -145,24 +146,24 @@ if ($_REQUEST['act'] == 'setup')
         {
             $lib = basename(strtolower(substr($val, 0, strpos($val, '.')))); // 获取库文件名
 
-            // 如果当前库文件名不属于动态库项目
+            // 如果当前库文件名属于固定库项目
             // $GLOBALS['dyna_libs'] 数据来源于 './admin/includes/lib_template' 文件
             if (!in_array($lib, $GLOBALS['dyna_libs'])) 
             {
-                /* 先排除动态内容 */
                 // 获得指定库项目在模板中的设置内容( array('region' => '', 'sort_order' => 0, 'display' => 0) )
                 // 如果固定库项目 $val 存在于模板文件中，就设置 region、sort_order、display三个信息的值，如果不存在模板中这三个信息的值就为空或0。
+                // get_setted()：获得指定库项目在模板中的设置内容
                 $temp_options[$lib]            = get_setted($val, $temp_libs); 
 
                 // p($temp_options[$lib]);
                 $temp_options[$lib]['desc']    = $_LANG['template_libs'][$lib]; //存储库文件中文名称
                 $temp_options[$lib]['library'] = $val; //库文件路径
-                $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0; //启动？
-                $temp_options[$lib]['number'] = $number_enabled; // 数量？
+                $temp_options[$lib]['number_enabled'] = $number_enabled > 0 ? 1 : 0; //显示数量
+                $temp_options[$lib]['number'] = $number_enabled; // 数量，仅限于列表内容
 
                 if (!in_array($lib, $editable_libs))
                 {
-                    $temp_options[$lib]['editable'] = 1; // 可编辑
+                    $temp_options[$lib]['editable'] = 1; // 不可编辑
                 }
             }
             // p($temp_options);
@@ -201,7 +202,7 @@ if ($_REQUEST['act'] == 'setup')
         }
     }
 
-    // p($temp_libs);die;
+    // p($db_dyna_libs);
 
     // 循环当前模板文件区域下的库项目
     foreach ($temp_libs AS $val)
@@ -259,9 +260,11 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
+
     // echo '2';die;
     // p(cat_list(0, 0, true));
     assign_query_info();
+
     $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 面包屑导航名称：设置模版
     $smarty->assign('curr_template_file', $curr_template); // 当前模板
     $smarty->assign('temp_options',       $temp_options); // 当前模板所有固定库项目
@@ -274,6 +277,7 @@ if ($_REQUEST['act'] == 'setup')
     $smarty->assign('arr_brands',         get_brand_list());
     $smarty->assign('arr_article_cats',   article_cat_list(0, 0, true));
     $smarty->assign('arr_ad_positions',   get_position_list());
+    // p($temp_options);die;
     $smarty->display('template_setup.htm');
 }
 
@@ -283,18 +287,20 @@ if ($_REQUEST['act'] == 'setup')
 
 if ($_REQUEST['act'] == 'setting')
 {
-    admin_priv('template_setup');
-    // p($_POST);die;
+    // p($_POST);
+    admin_priv('template_setup'); // 权限检测
     $curr_template = $_CFG['template']; // 当前主题
+
     // 从数据库中删除当前主题当前文件的设置模版选项
     $db->query("DELETE FROM " .$ecs->table('template'). " WHERE remarks = '' AND filename = '$_POST[template_file]' AND theme = '$curr_template'");
 
     /* 先处理固定内容 */
-
     foreach ($_POST['regions'] AS $key => $val)
     {
         $number = isset($_POST['number'][$key]) ? intval($_POST['number'][$key]) : 0; //数量
-        // 根据这个判断，得知需要存入 ecs_template 表的库项目是：1.不是动态内容；2.显示为1或者数量大于0。
+
+        //该库文件不是动态库（属于固定库） 并且
+        //该库文件设置为显示为1 或者 数量大于0
         if (!in_array($key, $GLOBALS['dyna_libs']) AND (isset($_POST['display'][$key]) AND $_POST['display'][$key] == 1 OR $number > 0))
         {
             // 这里有一个疑问？就是为什么不需要在 ecs_template 表中插入 type、id、remarks字段
@@ -465,13 +471,13 @@ if ($_REQUEST['act'] == 'setting')
 
         }
     }
-
+    // p($post_regions);
     /* 排序 */
     usort($post_regions, "array_sort");
 
     /* 修改模板文件 */
     $template_file    = '../themes/' . $curr_template . '/' . $_POST['template_file'] . '.dwt';
-    $template_content = file_get_contents($template_file);
+    $template_content = file_get_contents($template_file); // 获取模板文件内容
     $template_content = str_replace("\xEF\xBB\xBF", '', $template_content);
     // 获得编辑区域
     $org_regions      = get_template_region($curr_template, $_POST['template_file'].'.dwt', false);

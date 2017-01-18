@@ -1,4 +1,4 @@
-<?php exit;?>a:3:{s:8:"template";a:12:{i:0;s:52:"E:/Program/phpStudy/WWW/ec3/themes/default/index.dwt";i:1;s:66:"E:/Program/phpStudy/WWW/ec3/themes/default/library/page_header.lbi";i:2;s:74:"E:/Program/phpStudy/WWW/ec3/themes/default/library/index_category_tree.lbi";i:3;s:67:"E:/Program/phpStudy/WWW/ec3/themes/default/library/index_banner.lbi";i:4;s:66:"E:/Program/phpStudy/WWW/ec3/themes/default/library/ad_position.lbi";i:5;s:64:"E:/Program/phpStudy/WWW/ec3/themes/default/library/index_lad.lbi";i:6;s:60:"E:/Program/phpStudy/WWW/ec3/themes/default/library/f1_ad.lbi";i:7;s:64:"E:/Program/phpStudy/WWW/ec3/themes/default/library/cat_goods.lbi";i:8;s:60:"E:/Program/phpStudy/WWW/ec3/themes/default/library/f2_ad.lbi";i:9;s:60:"E:/Program/phpStudy/WWW/ec3/themes/default/library/f3_ad.lbi";i:10;s:68:"E:/Program/phpStudy/WWW/ec3/themes/default/library/recommend_hot.lbi";i:11;s:66:"E:/Program/phpStudy/WWW/ec3/themes/default/library/page_footer.lbi";}s:7:"expires";i:1484574960;s:8:"maketime";i:1484571360;}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php exit;?>a:3:{s:8:"template";a:12:{i:0;s:35:"F:/WWW/ec3/themes/default/index.dwt";i:1;s:49:"F:/WWW/ec3/themes/default/library/page_header.lbi";i:2;s:57:"F:/WWW/ec3/themes/default/library/index_category_tree.lbi";i:3;s:50:"F:/WWW/ec3/themes/default/library/index_banner.lbi";i:4;s:49:"F:/WWW/ec3/themes/default/library/ad_position.lbi";i:5;s:47:"F:/WWW/ec3/themes/default/library/index_lad.lbi";i:6;s:43:"F:/WWW/ec3/themes/default/library/f1_ad.lbi";i:7;s:47:"F:/WWW/ec3/themes/default/library/cat_goods.lbi";i:8;s:43:"F:/WWW/ec3/themes/default/library/f2_ad.lbi";i:9;s:43:"F:/WWW/ec3/themes/default/library/f3_ad.lbi";i:10;s:51:"F:/WWW/ec3/themes/default/library/recommend_hot.lbi";i:11;s:49:"F:/WWW/ec3/themes/default/library/page_footer.lbi";}s:7:"expires";i:1484723416;s:8:"maketime";i:1484719816;}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="Generator" content="ECSHOP v3.0.0" />
@@ -67,8 +67,7 @@ var process_request = "正在处理您的请求...";
     </div>
   </div>
 </div>
-<div class="clear0 "></div>
-<script>
+<div class="clear0 "></div><script>
 if (Object.prototype.toJSONString){
   var oldToJSONString = Object.toJSONString;
   Object.prototype.toJSONString = function(){
@@ -82,8 +81,7 @@ if (Object.prototype.toJSONString){
 </script>
 <div class="indexpage clearfix">
   <div class="index-cat">
-    
-<div class="category_info">
+    <div class="category_info">
   <div id="category_tree">
         <div class="cat-box">
       <div class="cat1"><a href="category.php?id=26">家用电器</a></div>
@@ -170,12 +168,9 @@ if (Object.prototype.toJSONString){
         <div class="clear0"></div>
   </div>
   <div class="clear0"></div>
-</div>
- 
- 
+</div> 
   </div>
-  <div class="index-banner"> 
- <style>
+  <div class="index-banner"><style>
     .swiper-container {
         width: 100%;
         height: 100%;
@@ -220,8 +215,7 @@ if (Object.prototype.toJSONString){
 45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:1:"4";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a
   </div>
   <div class="ad-lb">
-     
- <style>
+    <style>
     .swiper-container.swiper2 {
         width: 100%;
         height: auto;
@@ -280,8 +274,7 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">1F 家用电器</div>
       <div class="clearfix goods-wrap">
         <div class="goods-leftad">
-           
-45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:1:"9";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"10";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"11";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"12";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
+          45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:1:"9";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"10";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"11";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"12";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
         <div class="goods-right">
         
 <div class="all_ms">
@@ -356,8 +349,7 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">2F 数码时尚</div>
       <div class="clearfix goods-wrap">
         <div class="goods-leftad">
-           
-45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"13";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a<div style="margin-top:12px;">
+          45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"13";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a<div style="margin-top:12px;">
 	45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"14";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a</div>        </div>
         <div class="goods-right">
             
@@ -433,8 +425,7 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">3F 家居生活</div>
       <div class="clearfix goods-wrap">
         <div class="goods-leftad">
-           
-45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"15";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
+          45ea207d7a2b68c49582d2d22adf953aads|a:3:{s:4:"name";s:3:"ads";s:2:"id";s:2:"15";s:3:"num";s:1:"1";}45ea207d7a2b68c49582d2d22adf953a        </div>
         <div class="goods-right">
             
 <div class="all_ms">
@@ -509,7 +500,6 @@ if (Object.prototype.toJSONString){
       <div class="goods-title">热门商品推荐</div>
       <div class="clearfix goods-wrap hot-goods">
             
- 
 <div id="show_hot_area" class="clearfix goodsBox all_mid all_ms">
      <a class="goodsItem" href="goods.php?id=69"> <div  class="img-box"><img src="images/201605/thumb_img/69_thumb_G_1462955300971.jpg" alt="平衡车" class="goodsimg" /></div>
   <div class="goods-brief"></div>
@@ -615,8 +605,5 @@ if (Object.prototype.toJSONString){
 >&nbsp;&nbsp;Licensed</a><br />
           </div>
   <div class="clear10"></div>
-</div>
- 
- 
-</body>
+</div></body>
 </html>
