@@ -37,12 +37,12 @@
 </ul>
 <!-- directory install end -->
 <!-- banner area-->
-<div class="ban-area">
+<!--<div class="ban-area">
   <div class="inn">
     <iframe class="first" width="450" height="300" src="<?php echo $this->_var['pmp_desktop']; ?>" frameborder="0" scrolling="no"></iframe>
     <iframe width="450" height="300" src="<?php echo $this->_var['pmp_market']; ?>" frameborder="0" scrolling="no"></iframe>
   </div>
-</div>
+</div>-->
 <!-- banner area-->
 
 <!-- start personal message -->
