@@ -101,7 +101,7 @@ if ($_REQUEST['act'] == 'setup')
     $template_theme = $_CFG['template'];
     // 当前模板文件
     $curr_template  = empty($_REQUEST['template_file']) ? 'index' : $_REQUEST['template_file'];
-
+    // 用于存储固定库项目
     $temp_options   = array();
     // 当前模板区域，来源于模板文件代码
     $temp_regions   = get_template_region($template_theme, $curr_template.'.dwt', false);
@@ -197,6 +197,7 @@ if ($_REQUEST['act'] == 'setup')
         if ($val['lib'] == 'cat_goods') // 如果是分类商品库
         {
             /* 分类下的商品 */
+            // 如果该库在数据库中存在
             if (isset($db_dyna_libs[$val['region']][$val['library']]) && ($row = array_shift($db_dyna_libs[$val['region']][$val['library']]))) // 如果该库在数据库中存在
             {
                 $cate_goods[] = array('region' => $val['region'], 'sort_order' => $val['sort_order'], 'number' => $row['number'], 'cats'=>cat_list(0, $row['id']));
@@ -245,20 +246,20 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
-
+    // p($temp_options);
     assign_query_info(); // 获得查询时间和次数，并赋值给smarty
-    $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 
-    $smarty->assign('curr_template_file', $curr_template);
-    $smarty->assign('temp_options',       $temp_options);
-    $smarty->assign('temp_regions',       $temp_regions);
-    $smarty->assign('cate_goods',         $cate_goods);
-    $smarty->assign('brand_goods',        $brand_goods);
-    $smarty->assign('cat_articles',       $cat_articles);
-    $smarty->assign('ad_positions',       $ad_positions);
-    $smarty->assign('arr_cates',          cat_list(0, 0, true));
-    $smarty->assign('arr_brands',         get_brand_list());
-    $smarty->assign('arr_article_cats',   article_cat_list(0, 0, true));
-    $smarty->assign('arr_ad_positions',   get_position_list());
+    $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 面包屑导航名称：设置模版
+    $smarty->assign('curr_template_file', $curr_template); // 当前模板文件
+    $smarty->assign('temp_options',       $temp_options); // 当前模板文件全部固定库项目
+    $smarty->assign('temp_regions',       $temp_regions); // 当前模板全部区域
+    $smarty->assign('cate_goods',         $cate_goods); // 分类下的商品
+    $smarty->assign('brand_goods',        $brand_goods); // 品牌下的商品
+    $smarty->assign('cat_articles',       $cat_articles); // 文章列表
+    $smarty->assign('ad_positions',       $ad_positions); // 广告位
+    $smarty->assign('arr_cates',          cat_list(0, 0, true)); // 全部商品分类下拉列表
+    $smarty->assign('arr_brands',         get_brand_list()); // 全部品牌列表
+    $smarty->assign('arr_article_cats',   article_cat_list(0, 0, true)); // 全部文章分类下拉列表
+    $smarty->assign('arr_ad_positions',   get_position_list()); // 全部广告位列表
     $smarty->display('template_setup.htm');
 }
 
@@ -268,6 +269,7 @@ if ($_REQUEST['act'] == 'setup')
 
 if ($_REQUEST['act'] == 'setting')
 {
+    // p($_POST);
     admin_priv('template_setup');
 
     $curr_template = $_CFG['template'];

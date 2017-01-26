@@ -17,13 +17,14 @@
 <form name="theForm" action="template.php" method="post">
   <table width="100%" cellpadding="3" cellspacing="1">
   <tr>
-    <th><?php echo $this->_var['lang']['library_name']; ?></th>
-    <th><?php echo $this->_var['lang']['region_name']; ?></th>
-    <th><?php echo $this->_var['lang']['sort_order']; ?></th>
-    <th><?php echo $this->_var['lang']['contents']; ?></th>
-    <th><?php echo $this->_var['lang']['number']; ?></th>
-    <th><?php echo $this->_var['lang']['display']; ?></th>
+    <th><?php echo $this->_var['lang']['library_name']; ?></th><!--库项目-->
+    <th><?php echo $this->_var['lang']['region_name']; ?></th><!--区域-->
+    <th><?php echo $this->_var['lang']['sort_order']; ?></th><!--序号-->
+    <th><?php echo $this->_var['lang']['contents']; ?></th><!--内容-->
+    <th><?php echo $this->_var['lang']['number']; ?></th><!--数量-->
+    <th><?php echo $this->_var['lang']['display']; ?></th><!--显示-->
   </tr>
+  <!-- 循环固定库项目开始 -->
   <?php $_from = $this->_var['temp_options']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('lib_name', 'library');if (count($_from)):
     foreach ($_from AS $this->_var['lib_name'] => $this->_var['library']):
 ?>
@@ -45,6 +46,7 @@
     <td align="center"><input type="checkbox" name="display[<?php echo $this->_var['lib_name']; ?>]" value="1" <?php if ($this->_var['library']['editable'] == 1): ?> disabled <?php endif; ?><?php if ($this->_var['library']['display'] == 1): ?> checked="true" <?php endif; ?> /></td>
   </tr>
   <?php endforeach; endif; unset($_from); ?><?php $this->pop_vars();; ?>
+  <!-- 循环固定库项目结束 -->
 
   <!-- cateogry goods list -->
   <tr>
