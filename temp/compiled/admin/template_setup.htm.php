@@ -33,6 +33,7 @@
     <td>
       <select name="regions[<?php echo $this->_var['lib_name']; ?>]">
         <?php if ($this->_var['library']['editable'] == 1): ?>
+          <!--非可编辑区库文件无选择项-->
           <option value=""><?php echo $this->_var['lang']['not_editable']; ?></option>
         <?php else: ?>
           <option value=""><?php echo $this->_var['lang']['select_plz']; ?></option>
@@ -127,12 +128,12 @@
 
 <script language="JavaScript">
 <!--
-var currTemplateFile = '<?php echo $this->_var['curr_template_file']; ?>';
-var selCategories    = '<?php echo $this->_var['arr_cates']; ?>';
-var selRegions       = new Array();
-var selBrands        = new Array();
-var selArticleCats   = new Array();
-var selAdPositions   = new Array();
+var currTemplateFile = '<?php echo $this->_var['curr_template_file']; ?>'; // 当前模板文件
+var selCategories    = '<?php echo $this->_var['arr_cates']; ?>'; // 全部分类
+var selRegions       = new Array(); // 全部区域
+var selBrands        = new Array(); // 全部品牌
+var selArticleCats   = new Array(); // 全部文章分类
+var selAdPositions   = new Array(); // 全部广告列表
 
 <?php $_from = $this->_var['temp_regions']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('id', 'region');if (count($_from)):
     foreach ($_from AS $this->_var['id'] => $this->_var['region']):

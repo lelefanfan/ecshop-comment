@@ -96,6 +96,7 @@ if ($_REQUEST['act'] == 'list')
 
 if ($_REQUEST['act'] == 'setup')
 {
+    // 权限检测
     admin_priv('template_setup');
     // 当前模板主题
     $template_theme = $_CFG['template'];
@@ -156,11 +157,11 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
-
+    // p($temp_options);
     /* 设置动态内容 */
     $cate_goods   = array(); // 分类下的商品
     $brand_goods  = array(); // 品牌的商品
-    $cat_articles = array(); // 违章列表
+    $cat_articles = array(); // 文章列表
     $ad_positions = array(); // 广告位
 
     $sql = "SELECT region, library, sort_order, id, number, type FROM ".$ecs->table('template') ." ".
@@ -246,7 +247,7 @@ if ($_REQUEST['act'] == 'setup')
             }
         }
     }
-    // p($temp_options);
+    // p($_LANG);
     assign_query_info(); // 获得查询时间和次数，并赋值给smarty
     $smarty->assign('ur_here',            $_LANG['03_template_setup']); // 面包屑导航名称：设置模版
     $smarty->assign('curr_template_file', $curr_template); // 当前模板文件
@@ -269,16 +270,20 @@ if ($_REQUEST['act'] == 'setup')
 
 if ($_REQUEST['act'] == 'setting')
 {
-    // p($_POST);
+    p($_POST);
+    // 权限检测
     admin_priv('template_setup');
-
+    // 当前主题
     $curr_template = $_CFG['template'];
+    // 从数据中删除当前主题当前模板文件所有库项目设置
     $db->query("DELETE FROM " .$ecs->table('template'). " WHERE remarks = '' AND filename = '$_POST[template_file]' AND theme = '$curr_template'");
 
-    /* 先处理固定内容 */
+    /* 处理固定库项目 */
     foreach ($_POST['regions'] AS $key => $val)
     {
-        $number = isset($_POST['number'][$key]) ? intval($_POST['number'][$key]) : 0;
+        $number = isset($_POST['number'][$key]) ? intval($_POST['number'][$key]) : 0; // 设置显示数量
+
+        //判断：1.不是动态库项目，并且；2.display字段为1或者显示数量大于0
         if (!in_array($key, $GLOBALS['dyna_libs']) AND (isset($_POST['display'][$key]) AND $_POST['display'][$key] == 1 OR $number > 0))
         {
             $sql = "INSERT INTO " .$ecs->table('template').
@@ -289,11 +294,12 @@ if ($_REQUEST['act'] == 'setting')
         }
     }
 
-    /* 分类的商品 */
+    /* 处理分类的商品 */
     if (isset($_POST['regions']['cat_goods']))
     {
         foreach ($_POST['regions']['cat_goods'] AS $key => $val)
         {
+            // 栏目存在
             if ($_POST['categories']['cat_goods'][$key] != '' && intval($_POST['categories']['cat_goods'][$key]) > 0)
             {
                 $sql = "INSERT INTO " .$ecs->table('template'). " (".
@@ -309,7 +315,7 @@ if ($_REQUEST['act'] == 'setting')
         }
     }
 
-    /* 品牌的商品 */
+    /* 处理品牌的商品 */
     if (isset($_POST['regions']['brand_goods']))
     {
         foreach ($_POST['regions']['brand_goods'] AS $key => $val)
@@ -329,7 +335,7 @@ if ($_REQUEST['act'] == 'setting')
         }
     }
 
-    /* 文章列表 */
+    /* 处理文章列表 */
     if (isset($_POST['regions']['cat_articles']))
     {
         foreach ($_POST['regions']['cat_articles'] AS $key => $val)
@@ -349,7 +355,7 @@ if ($_REQUEST['act'] == 'setting')
         }
     }
 
-    /* 广告位 */
+    /* 处理广告位 */
     if (isset($_POST['regions']['ad_position']))
     {
         foreach ($_POST['regions']['ad_position'] AS $key => $val)
