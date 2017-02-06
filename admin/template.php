@@ -270,7 +270,7 @@ if ($_REQUEST['act'] == 'setup')
 
 if ($_REQUEST['act'] == 'setting')
 {
-    p($_POST);
+    // p($_POST);
     // 权限检测
     admin_priv('template_setup');
     // 当前主题
@@ -377,6 +377,7 @@ if ($_REQUEST['act'] == 'setting')
 
     /* 对提交内容进行处理 */
     $post_regions = array();
+    // 处理动态库项目
     foreach ($_POST['regions'] AS $key => $val)
     {
         switch ($key)
@@ -451,6 +452,8 @@ if ($_REQUEST['act'] == 'setting')
         }
     }
 
+    // p($post_regions);
+
     /* 排序 */
     usort($post_regions, "array_sort");
 
@@ -458,16 +461,18 @@ if ($_REQUEST['act'] == 'setting')
     $template_file    = '../themes/' . $curr_template . '/' . $_POST['template_file'] . '.dwt';
     $template_content = file_get_contents($template_file);
     $template_content = str_replace("\xEF\xBB\xBF", '', $template_content);
+    // 区域列表
     $org_regions      = get_template_region($curr_template, $_POST['template_file'].'.dwt', false);
-
     $region_content   = '';
     $pattern          = '/(<!--\\s*TemplateBeginEditable\\sname="%s"\\s*-->)(.*?)(<!--\\s*TemplateEndEditable\\s*-->)/s';
     $replacement      = "\\1\n%s\\3";
     $lib_template     = "<!-- #BeginLibraryItem \"%s\" -->\n%s\n <!-- #EndLibraryItem -->\n";
 
+    // 循环每个区域
     foreach ($org_regions AS $region)
     {
         $region_content = ''; // 获取当前区域内容
+        // 循环动态库项目
         foreach ($post_regions AS $lib)
         {
             if ($lib['region'] == $region)
