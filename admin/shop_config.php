@@ -17,7 +17,7 @@ define('IN_ECS', true);
 
 /* 代码 */
 require(dirname(__FILE__) . '/includes/init.php');
-
+// p($GLOBALS['_CFG']);
 if($GLOBALS['_CFG']['certificate_id']  == '')
 {
     $certi_id='error';
@@ -28,11 +28,11 @@ else
 }
 
 $sess_id = $GLOBALS['sess']->get_session_id();
-
+// p($sess_id);
 $auth = time();
 $ac = md5($certi_id.'SHOPEX_SMS'.$auth);
 $url = 'http://service.shopex.cn/sms/index.php?certificate_id='.$certi_id.'&sess_id='.$sess_id.'&auth='.$auth.'&ac='.$ac;
-
+// echo $url;die;
 /*------------------------------------------------------ */
 //-- 列表编辑 ?act=list_edit
 /*------------------------------------------------------ */
@@ -52,50 +52,50 @@ if ($_REQUEST['act'] == 'list_edit')
         }
     }
     @closedir($dir);
-
-    $smarty->assign('lang_list',    $lang_list);
-    $smarty->assign('ur_here',      $_LANG['01_shop_config']);
-    $smarty->assign('group_list',   get_settings(null, array('5')));
-    $smarty->assign('countries',    get_regions());
+    // p($_CFG);
+    $smarty->assign('lang_list',    $lang_list); // 可选语言
+    $smarty->assign('ur_here',      $_LANG['01_shop_config']); // 当前位置
+    $smarty->assign('group_list',   get_settings(null, array('5'))); // 获取设置信息
+    $smarty->assign('countries',    get_regions()); // 地区信息
 
     if (strpos(strtolower($_SERVER['SERVER_SOFTWARE']), 'iis') !== false)
     {
-        $rewrite_confirm = $_LANG['rewrite_confirm_iis'];
+        $rewrite_confirm = $_LANG['rewrite_confirm_iis']; // rewrite提示信息
     }
     else
     {
-        $rewrite_confirm = $_LANG['rewrite_confirm_apache'];
+        $rewrite_confirm = $_LANG['rewrite_confirm_apache']; // rewrite提示信息
     }
     $smarty->assign('rewrite_confirm', $rewrite_confirm);
-
-    if ($_CFG['shop_country'] > 0)
+    // 分派国家、省市等地区信息
+    if ($_CFG['shop_v'] > 0)
     {
         $smarty->assign('provinces', get_regions(1, $_CFG['shop_country']));
         if ($_CFG['shop_province'])
         {
             $smarty->assign('cities', get_regions(2, $_CFG['shop_province']));
         }
-    }
-    $smarty->assign('cfg', $_CFG);
+    }    
+    $smarty->assign('cfg', $_CFG); // 分派配置信息
 
-    assign_query_info();
-    
+    assign_query_info(); //获得查询时间和次数，并赋值给smarty
+    // 设置订单信息 
     $demo_data['mobile'] = '13812345678';
     $demo_data['name']   = '张三';
     $demo_data['order_sn'] = '12345678978945';
     $demo_data['order_amount'] = '65.00';
     $demo_data['delivery_time'] = '4月30号';
     $demo_data['sms_sign'] = $GLOBALS['_CFG']['shop_name'];
-    foreach ($demo_data as $k=>$v) $demo_data[$k] = sprintf("<font color='red'>%s</font>",$v);
-    require_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/common.php');
-    require_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/shopping_flow.php');
-    require_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/admin/order.php');
+    foreach ($demo_data as $k=>$v) $demo_data[$k] = sprintf("<font color='red'>%s</font>",$v);    
+    require_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/common.php'); // 载入语言变量
+    require_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/shopping_flow.php'); // 载入语言变量
+    require_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/admin/order.php'); // 载入语言变量
     $demo_sms_info['sms_order_placed'] = sprintf($_LANG['order_placed_sms'], $demo_data['name'], $demo_data['mobile']);
     $demo_sms_info['sms_order_payed'] = sprintf($_LANG['order_payed_sms'], $demo_data['order_sn'], $demo_data['name'], $demo_data['mobile']);
     $demo_sms_info['sms_order_payed_to_customer'] = sprintf($_LANG['order_payed_to_customer_sms'], $demo_data['order_sn'], $demo_data['order_amount']);
     $demo_sms_info['sms_order_shipped'] = sprintf($_LANG['order_shipped_sms'], $demo_data['order_sn'],
                 $demo_data['delivery_time'], $demo_data['sms_sign']);
-    $smarty->assign('demo_sms_info',$demo_sms_info);
+    $smarty->assign('demo_sms_info',$demo_sms_info); // 分派订单信息
     $smarty->display('shop_config.htm');
 }
 
@@ -130,7 +130,7 @@ elseif ($_REQUEST['act'] == 'post')
     $allow_file_types = '|GIF|JPG|PNG|BMP|SWF|DOC|XLS|PPT|MID|WAV|ZIP|RAR|PDF|CHM|RM|TXT|CERT|';
 
     /* 保存变量值 */
-    $count = count($_POST['value']);
+    $count = count($_POST['value']); // 保存字段数量
 
     $arr = array();
     $sql = 'SELECT id, value FROM ' . $ecs->table('shop_config');
@@ -147,8 +147,8 @@ elseif ($_REQUEST['act'] == 'post')
             $db->query($sql);
         }
     }
-
-    if( isset($_POST['value']['247']) and $_POST['value']['247'] ){
+    // 247功能为是否开启物流跟踪
+    if( isset($_POST['value']['247']) and $_POST['value']['247'] ){ // 开启物流跟踪
         include_once(ROOT_PATH . 'includes/cls_certificate.php');
         $cert = new certificate();
         if( false == $cert->open_logistics_trace() ){

@@ -9,7 +9,9 @@
 if ($this->_foreach['bar_group']['total'] > 0):
     foreach ($_from AS $this->_var['group']):
         $this->_foreach['bar_group']['iteration']++;
-?><span class="<?php if ($this->_foreach['bar_group']['iteration'] == 1): ?>tab-front<?php else: ?>tab-back<?php endif; ?>" id="<?php echo $this->_var['group']['code']; ?>-tab"><?php echo $this->_var['group']['name']; ?></span><?php endforeach; endif; unset($_from); ?><?php $this->pop_vars();; ?>
+?>
+        <span class="<?php if ($this->_foreach['bar_group']['iteration'] == 1): ?>tab-front<?php else: ?>tab-back<?php endif; ?>" id="<?php echo $this->_var['group']['code']; ?>-tab"><?php echo $this->_var['group']['name']; ?></span>
+      <?php endforeach; endif; unset($_from); ?><?php $this->pop_vars();; ?>
     </p>
   </div>
   <!-- tab body -->
@@ -20,7 +22,7 @@ if ($this->_foreach['body_group']['total'] > 0):
     foreach ($_from AS $this->_var['group']):
         $this->_foreach['body_group']['iteration']++;
 ?>
-    <table width="90%" id="<?php echo $this->_var['group']['code']; ?>-table" <?php if ($this->_foreach['body_group']['iteration'] != 1): ?>style="display:none"<?php endif; ?>>
+      <table width="90%" id="<?php echo $this->_var['group']['code']; ?>-table" <?php if ($this->_foreach['body_group']['iteration'] != 1): ?>style="display:none"<?php endif; ?>>
       <?php $_from = $this->_var['group']['vars']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('key', 'var');if (count($_from)):
     foreach ($_from AS $this->_var['key'] => $this->_var['var']):
 ?>
