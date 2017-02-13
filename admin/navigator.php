@@ -15,8 +15,8 @@
 
 define('IN_ECS', true);
 require(dirname(__FILE__) . '/includes/init.php');
-
-admin_priv('navigator');
+// p($_LANG);
+admin_priv('navigator'); // 权限检测
 
 $exc = new exchange($ecs->table("nav"), $db, 'id', 'name');
 
@@ -25,18 +25,18 @@ $exc = new exchange($ecs->table("nav"), $db, 'id', 'name');
 /*------------------------------------------------------ */
 if ($_REQUEST['act'] == 'list')
 {
-    $smarty->assign('ur_here', $_LANG['navigator']);
-    $smarty->assign('action_link', array('text' => $_LANG['add_new'], 'href' => 'navigator.php?act=add'));
+    $smarty->assign('ur_here', $_LANG['navigator']); // 页面名称
+    $smarty->assign('action_link', array('text' => $_LANG['add_new'], 'href' => 'navigator.php?act=add')); // 添加导航
     $smarty->assign('full_page',  1);
 
     $navdb = get_nav();
-
+    // p($navdb);
     $smarty->assign('navdb',   $navdb['navdb']);
     $smarty->assign('filter',       $navdb['filter']);
-    $smarty->assign('record_count', $navdb['record_count']);
-    $smarty->assign('page_count',   $navdb['page_count']);
+    $smarty->assign('record_count', $navdb['record_count']); // 总记录数
+    $smarty->assign('page_count',   $navdb['page_count']); // 总页数
 
-    assign_query_info();
+    assign_query_info(); // 获得查询时间和次数，并赋值给smarty
     $smarty->display('navigator.htm');
 }
 /*------------------------------------------------------ */
