@@ -265,6 +265,7 @@ elseif ($_REQUEST['act'] == 'list')
     $smarty->assign('ur_here',     $_LANG['admin_list']);
     $smarty->assign('action_link', array('href'=>'privilege.php?act=add', 'text' => $_LANG['admin_add']));
     $smarty->assign('full_page',   1);
+    // p(get_admin_userlist());
     $smarty->assign('admin_list',  get_admin_userlist());
 
     /* 显示页面 */
@@ -668,9 +669,9 @@ elseif ($_REQUEST['act'] == 'modif')
 /*------------------------------------------------------ */
 elseif ($_REQUEST['act'] == 'allot')
 {
-    include_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/admin/priv_action.php');
+    include_once(ROOT_PATH . 'languages/' .$_CFG['lang']. '/admin/priv_action.php'); // 载入语言文件
 
-    admin_priv('allot_priv');
+    admin_priv('allot_priv'); // 权限检测
     if ($_SESSION['admin_id'] == $_GET['id'])
     {
         admin_priv('all');
@@ -722,7 +723,7 @@ elseif ($_REQUEST['act'] == 'allot')
     $smarty->assign('priv_arr',    $priv_arr);
     $smarty->assign('form_act',    'update_allot');
     $smarty->assign('user_id',     $_GET['id']);
-
+    // p($priv_arr);
     /* 显示页面 */
     assign_query_info();
     $smarty->display('privilege_allot.htm');

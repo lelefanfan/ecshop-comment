@@ -21,7 +21,7 @@ require(dirname(__FILE__) . '/includes/init.php');
 // 检测调试模式设置模板缓存类型
 if ((DEBUG_MODE & 2) != 2)
 {
-    $smarty->caching = true;
+    $smarty->caching = true; //开启smarty缓存
 }
 
 // 获取浏览器信息

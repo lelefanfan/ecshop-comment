@@ -1350,7 +1350,9 @@ function clear_tpl_files($is_cache = true, $ext = '')
                 }
             }
         }
+
         closedir($folder);
+        // echo '1111';die;
     }
 
     return $count;

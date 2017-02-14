@@ -52,6 +52,13 @@ $template_files = array(
 
 /* 每个模板可以使用的库项目 */
 $page_libs = array(
+    'test' => array(
+        '/library/ur_here.lbi' => 0,
+        '/library/recommend_best.lbi' => 3,
+        '/library/recommend_hot.lbi' => 3,
+        '/library/history.lbi' => 0,
+        '/library/goods_related.lbi' => 0,
+    ),
     'demo' => array(
     ),
     'article' => array(

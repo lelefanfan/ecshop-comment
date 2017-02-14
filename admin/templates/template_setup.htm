@@ -17,19 +17,21 @@
 <form name="theForm" action="template.php" method="post">
   <table width="100%" cellpadding="3" cellspacing="1">
   <tr>
-    <th>{$lang.library_name}</th>
-    <th>{$lang.region_name}</th>
-    <th>{$lang.sort_order}</th>
-    <th>{$lang.contents}</th>
-    <th>{$lang.number}</th>
-    <th>{$lang.display}</th>
+    <th>{$lang.library_name}</th><!--库项目-->
+    <th>{$lang.region_name}</th><!--区域-->
+    <th>{$lang.sort_order}</th><!--序号-->
+    <th>{$lang.contents}</th><!--内容-->
+    <th>{$lang.number}</th><!--数量-->
+    <th>{$lang.display}</th><!--显示-->
   </tr>
+  <!-- 循环固定库项目开始 -->
   {foreach from=$temp_options item=library key=lib_name}
   <tr>
     <td class="first-cell">{$library.desc}</td>
     <td>
       <select name="regions[{$lib_name}]">
         {if $library.editable eq 1}
+          <!--非可编辑区库文件无选择项-->
           <option value="">{$lang.not_editable}</option>
         {else}
           <option value="">{$lang.select_plz}</option>
@@ -43,6 +45,7 @@
     <td align="center"><input type="checkbox" name="display[{$lib_name}]" value="1" {if $library.editable eq 1} disabled {/if}{if $library.display eq 1} checked="true" {/if} /></td>
   </tr>
   {/foreach}
+  <!-- 循环固定库项目结束 -->
 
   <!-- cateogry goods list -->
   <tr>
@@ -115,12 +118,12 @@
 
 <script language="JavaScript">
 <!--
-var currTemplateFile = '{$curr_template_file}';
-var selCategories    = '{$arr_cates}';
-var selRegions       = new Array();
-var selBrands        = new Array();
-var selArticleCats   = new Array();
-var selAdPositions   = new Array();
+var currTemplateFile = '{$curr_template_file}'; // 当前模板文件
+var selCategories    = '{$arr_cates}'; // 全部分类
+var selRegions       = new Array(); // 全部区域
+var selBrands        = new Array(); // 全部品牌
+var selArticleCats   = new Array(); // 全部文章分类
+var selAdPositions   = new Array(); // 全部广告列表
 
 {foreach from=$temp_regions item=region key=id}
 selRegions[{$id}] = '{$region|escape:quotes}';
